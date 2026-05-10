@@ -18,7 +18,9 @@ memory/
 tasks/
 plans/
 hooks/
+mcp.json
 mcp-needs-auth-cache.json
+scripts/
 
 # Claude Code内部
 .claude/
