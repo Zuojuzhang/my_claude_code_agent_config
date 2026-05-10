@@ -4,37 +4,31 @@
 
 ### 做什么，用什么agent
 
-| 场景 | 必须调用的agent |
-|------|----------------|
-| 产品idea判断、商业模式、要不要做、提功能建议、用户体验改进 | product-strategist |
-| 功能需求拆解（方向已定，进入开发前的子功能/边界/牵连分析） | product-manager |
-| 界面设计 | UI-designer |
-| 写代码/改代码 | code-writer |
-| 审查代码 | code-reviewer |
-
 Claude Code本体只做：理解用户意图、判断走哪条流程、在agent之间传递上下文、向用户确认决策点。
+
+product-strategist：产品idea判断、商业模式、要不要做、提功能建议、用户体验改进
+product-manager：功能需求拆解（方向已定，进入开发前的子功能/边界/牵连分析）
+UI-designer：UI界面设计、PDF美观、交互优化
+code-writer：写代码/改代码
+code-reviewer：审查代码
 
 违反判断标准：如果你正在直接编辑项目代码文件，或直接输出产品需求拆解、商业判断、功能建议、体验改进等内容，说明你跳过了agent，停下来改用正确的agent。
 
 ### 完整流程顺序
 
-1. 阶段判断：方向未定（idea/要不要做/该加什么功能/体验怎么改）→ 走 product-strategist；方向已定 → 跳到第3步走 product-manager
-2. product-strategist 输出商业判断+功能建议+体验改进 → 交给用户确认 → 用户决定推进开发后进入下一步
-3. product-manager：输入确认后的功能描述，拿到实体分析、五个必问、输入输出链、子功能清单
-4. 将子功能清单交给用户确认，确认后进入下一步
-5. 如果涉及前端界面，调用 UI-designer：输入确认后的需求 + 设计系统文件路径，拿到界面方案
-6. 调用 code-writer：输入确认后的需求文档 + UI方案（如有） + 设计系统文件路径
-7. code-writer返回后，立即调用 code-reviewer：输入改动文件列表 + 需求文档 + 设计系统文件
-8. 如果reviewer结论是⚠️或❌，将审查报告转给code-writer修改，修改后再次调用reviewer，直到✅
+1. product-strategist：idea/要不要做/该加什么功能/体验怎么改，输出商业判断+功能建议+体验改进 → 交给用户确认
+2. product-manager：输入商业产品经理的方案，设计实体分析、五个必问、输入输出链、子功能清单 → 交给用户确认
+3. UI-designer：输入确认后的需求，设计系统文件路径 + 界面方案
+6. code-writer：输入确认后的需求文档 + UI方案（如有） + 设计系统文件路径
+7. code-reviewer：输入改动文件列表 + 需求文档 + 设计系统文件
+8. reviewer：如果结论是⚠️或❌，将审查报告转给code-writer修改，修改后再次调用reviewer，直到✅
 
 ### 什么情况下不需要完整流程
 
-| 场景 | 处理方式 |
-|------|---------|
-| 纯产品idea/商业判断/功能建议/体验思考 | 只调用 product-strategist，不进入实现 |
-| 纯需求拆解 | 只调用 product-manager，不进入实现 |
-| 纯bug修复 | 跳过 product-strategist/product-manager/UI-designer，直接 code-writer → code-reviewer |
-| 纯样式调整 | 跳过前面的产品环节，走 UI-designer → code-writer → code-reviewer |
+1. 纯产品idea/商业判断/功能建议/体验思考：只调用 product-strategist，不进入实现
+2. 纯需求拆解：只调用 product-manager，不进入实现
+3. 非前端UI的bug修复：跳过 product-strategist/product-manager/UI-designer，直接 code-writer → code-reviewer
+4. 纯前端UI样式调整：跳过前面的产品环节，走 UI-designer → code-writer → code-reviewer
 
 ### 调用code-reviewer的硬约束
 
