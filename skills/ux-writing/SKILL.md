@@ -97,7 +97,6 @@ B 类：按公式/三段式/五要素生成或改写
 | 场景 | 归属 |
 |------|------|
 | 商业判断、产品定位 | product-strategist |
-| 品牌调性、视觉风格 | brand-guidelines |
 | 功能拆解、AC 验收 | product-manager / feature-breakdown |
 | UI 视觉规格 | ui-designer |
 | 用户视角体验审查 | ux-reviewer / ux-bug-check |
