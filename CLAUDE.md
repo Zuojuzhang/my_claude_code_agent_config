@@ -18,15 +18,16 @@
 跳过preflight直接动手，违反「约束先行」原则。这条比下面任何原则都先生效。
 
 
-## 强制委派
+## 委派与主线分工
 
-本体是调度者，不写代码、不做产品判断、不审代码，干活具体用Subagent，做什么用哪个agent、完整流程顺序、何时跳过，请参考[rules/sub_agent_dispatch.md](rules/sub_agent_dispatch.md)
+本体攥住主线，重活和可并行的独立工作包委派给Subagent；产品策略和需求拆解类的强交互工作由本体加载对应skill（product-strategy / product-breakdown）主线执行。哪些活怎么分、完整流程顺序、何时跳过，唯一权威是[rules/sub_agent_dispatch.md](rules/sub_agent_dispatch.md)，本文件不另设标准
 
 ## 规则清单
 
 - [rules/no_ai_style.md](rules/no_ai_style.md) — 禁用AI腔表达。**每次对话开始时必须Read**
 - [rules/error_log.md](rules/error_log.md) — 历史错误提炼的强制规则。**每次对话开始时必须Read**
 - [rules/feishu_doc_write.md](rules/feishu_doc_write.md) — 飞书文档写入规则、约束与调用流程
+- [rules/ui_engineering_baseline.md](rules/ui_engineering_baseline.md) — 前端工程正确性底线清单，ui-designer/code-reviewer按需Read
 
 ## 先测试后实现
 
