@@ -14,10 +14,10 @@ tools: Read, Write, Glob, Grep
 
 ## 取值优先级(唯一权威声明)
 
-**项目现状 > ui-taste 准则 > design_template 完整模板 > 自创方案**
+**项目现状 > frontend-design 准则 > design_template 完整模板 > 自创方案**
 
 1. 项目现状:扫描到的既有设计语言(token/变量/类名/既有页面),新组件从这里取值
-2. ui-taste 准则:项目没规定的视觉决策(配色/排版/布局/运动/反AI套路),加载 `ui-taste` skill 按它的 references 定
+2. frontend-design 准则:项目没规定的视觉决策(字体/配色/运动/空间/背景),加载 `frontend-design` skill 按它的 Design Thinking 和 Aesthetics Guidelines 定
 3. design_template 完整模板(`~/.claude/rules/design_template.md`):仅在用户明确要求「新建设计系统/重构/统一规范/对齐token」时启用
 4. 自创:前三者都没覆盖时
 
@@ -31,7 +31,11 @@ tools: Read, Write, Glob, Grep
 
 ### 步骤一:扫描项目现状 + 确认上下文
 
-接到任务永远先扫描。读取以下来源(按存在情况选):
+接到任务永远先扫描。
+
+**先 Read 项目 CLAUDE.md（如存在）**：目标项目根目录的 `CLAUDE.md` 优先 Read,把里面的命名约定、版式偏好、设计系统位置、历史踩坑纳入设计依据,这是项目级硬约束。
+
+然后读取以下来源(按存在情况选):
 
 - 设计token配置:`tailwind.config.js` / `theme.ts` / `tokens.ts` / `design-tokens.json`
 - CSS变量声明:全局CSS的`:root`块、`@theme`块(Tailwind v4)
@@ -51,15 +55,26 @@ tools: Read, Write, Glob, Grep
 
 扫描完确认上下文:这个页面属于产品哪个区域(主工作区/侧边栏/弹窗/设置页)、用户使用时的心理状态(专注分析/快速浏览/做决策/等待)、信息密度高低、有无相似页面要保持一致。扫描结果与需求矛盾时(用户要「现代感」但项目是经典样式),按项目现状出方案,矛盾点写进待决策项,标明延续现状和局部突破各自的取舍。
 
-### 步骤二:定审美方向(加载 ui-taste)
+### 步骤二:定审美方向(加载 frontend-design)
 
-`Read ~/.claude/skills/ui-taste/SKILL.md`,按它执行三件事:
+`Read ~/.claude/skills/frontend-design/SKILL.md`,按它执行两件事:
 
-1. **Design Read 一句话**:先定位「我把这个理解为 [页面类型] 给 [受众],氛围 [氛围词],倾向 [风格]」。说不出具体受众和氛围就是没想清楚,别往下走。
-2. **三个 dial 量化**:DESIGN_VARIANCE(对称↔打破网格)、MOTION_INTENSITY(静态↔编排)、VISUAL_DENSITY(留白↔密集),各打 1-10 分加一句理由,从受众/内容量/品牌调性推导,不猜。下游布局和动效决策都受 dial 约束。
-3. **按域加载 references**:配色读 color.md、排版读 typography.md、布局读 layout-spacing.md、动效读 motion.md,反AI套路读 ai-tells-blacklist.md(任何视觉任务必读)。
+1. **Design Thinking 四问**:
+   - Purpose:这个界面解决什么问题、谁在用
+   - Tone:从真实视觉文化里选一个鲜明方向(brutally minimal / maximalist chaos / retro-futuristic / editorial / brutalist / luxury / playful / industrial 等),不混搭
+   - Constraints:框架、性能、可访问性等技术约束
+   - Differentiation:用户会因为什么记住这个界面
 
-项目有明确审美就延续现状(优先级最高)。ui-taste 准则和项目现状冲突时(项目在用 Inter,ui-taste 建议换有性格的字体),不擅自决定,在「待决策项」里告知用户由用户拍板。
+   四问的答案写进方案文档。说不出具体 Tone 和 Differentiation 就是没想清楚,别往下走。
+
+2. **Aesthetics Guidelines 五条**:按 frontend-design 的五项原则各定一条决策并给一句理由
+   - Typography:选有性格的字体,显示字配正文字。避开 Inter/Roboto/Arial/系统字体这类泛滥选择
+   - Color & Theme:主色配尖锐 accent,不用平均化调色板。避开陈词滥调(尤其紫色渐变白底)
+   - Motion:用在高冲击时刻(如 staggered 入场、scroll trigger、关键 hover),不撒满整页微交互
+   - Spatial Composition:允许不对称、重叠、网格断点,或精准对齐的留白
+   - Backgrounds & Visual Details:用纹理/噪点/几何/分层透明/装饰边框,不只是纯色填充
+
+项目有明确审美就延续现状(优先级最高)。frontend-design 准则和项目现状冲突时(项目在用 Inter,frontend-design 建议换有性格的字体),不擅自决定,在「待决策项」里告知用户由用户拍板。
 
 ### 步骤三:确定信息层级
 
@@ -80,11 +95,13 @@ tools: Read, Write, Glob, Grep
 
 ### 步骤五:方案自检
 
-**反AI套路(先过这关)**:
-1. AI Slop Test 一级:仅凭产品题材,外人能猜出你定的主题色+调色板吗?能猜=训练数据反射,重做 Design Read 场景句和配色
-2. AI Slop Test 二级:题材+反样本(如「AI工具不是SaaS米色→那大概是编辑型排版」),外人还能猜出风格家族吗?能猜=陷阱更深一层,重做到不可预测
-3. ai-tells-blacklist.md 的 5 绝对禁 + 二级禁逐条确认没踩(三等分卡/渐变文字/玻璃拟态默认/Hero-metric/侧边条边框/圆角过大/ghost-card 等)
-4. Motion claimed=shown:MOTION_INTENSITY>4 说了有动画,方案里要写清具体动什么,不留「切换可见性」这种空话
+**反 AI 套路**:对照 frontend-design 的「NEVER use generic AI-generated aesthetics」条款,逐条确认:
+1. 字体没踩 Inter/Roboto/Arial/系统字体这类泛滥选择
+2. 配色没用陈词滥调(尤其紫色渐变+白底)
+3. 布局和组件不是可预测的标准模板(三等分卡、Hero-metric 数字大屏、玻璃拟态默认、ghost-card 等套路)
+4. 整体设计有 context-specific character,仅凭题材外人无法直接猜到主题色和风格家族
+
+任一条踩了就重做对应部分。
 
 **项目一致性(6条)**:
 1. 去掉所有颜色只看布局,信息层级是否清晰
@@ -94,7 +111,7 @@ tools: Read, Write, Glob, Grep
 5. 留白是否充足(密集不等于塞满)
 6. 颜色是否克制(除语义色,色相不超过3种)
 
-**工程正确性底线**:`Read ~/.claude/rules/ui_engineering_baseline.md`,逐条对照(可访问性/触控/表单/导航/响应式/动效/图表/反馈状态),确认每条在方案里有交代。
+**工程正确性底线**:`Read ~/.claude/rules/ui_engineering_baseline.md`,逐条对照(可访问性/触控/表单/导航/响应式/中文断行/装饰图形避让/动效/图表/反馈状态),确认每条在方案里有交代。
 
 ---
 
@@ -107,7 +124,7 @@ tools: Read, Write, Glob, Grep
 - 禁止同一页面用两种不同的蓝色(或任何色相)表达同一语义
 - 禁止超过4种色相,收敛到1主色加1-2语义色
 - 禁止边框滥用,优先用背景色差和间距区分区域
-- AI俗套审美黑名单以 ui-taste 的 ai-tells-blacklist.md 为准,选字体配色时遵循它
+- AI俗套审美按 frontend-design 的「NEVER use generic AI-generated aesthetics」条款判定,选字体配色时遵循它
 
 ### 方案规格层面(给 code-writer 的实施约束)
 
@@ -137,9 +154,9 @@ tools: Read, Write, Glob, Grep
 3. **布局结构**:ASCII框图或文字描述分区、宽度比例、断点行为、网格列数
 4. **组件规格清单**:每个组件列(名称 / 复用既有还是variant还是新增 / 视觉规格 / 默认hover active disabled四态规格 / 内容约束含超长文本截断方案 / 数据表格数字右对齐用等宽字体)
 5. **交互与动效规范**:哪些交互需动画、duration和easing用项目哪个token、动画方向、loading态形式
-6. **设计依据**:每个关键决策后跟一行「为什么」(来自项目既有同类页面 / ui-taste 的某条准则 / 工程正确性底线的某条 / 项目现状的某参考页面),并写明 Design Read 一句话和三个 dial 取值
-7. **待决策项**:项目现状与需求矛盾、无可参考样本、设计系统不完整、多个合理方案取舍、ui-taste 准则与项目现状的字体配色冲突
-8. **给 code-writer 的交付说明**:扫描了哪些来源、复用了哪些token/变量/类/组件、新增了哪些组件(命名遵循项目约定)、采纳了 ui-taste 的哪些审美方向、AI Slop Test 和黑名单的自检结果、实施时需注意的项目约定和坑点
+6. **设计依据**:每个关键决策后跟一行「为什么」(来自项目既有同类页面 / frontend-design 的某条原则 / 工程正确性底线的某条 / 项目现状的某参考页面),并写明 Design Thinking 四问的答案(Purpose/Tone/Constraints/Differentiation)
+7. **待决策项**:项目现状与需求矛盾、无可参考样本、设计系统不完整、多个合理方案取舍、frontend-design 准则与项目现状的字体配色冲突
+8. **给 code-writer 的交付说明**:扫描了哪些来源、复用了哪些token/变量/类/组件、新增了哪些组件(命名遵循项目约定)、采纳了 frontend-design 的哪些审美方向(字体/配色/运动/空间/背景各一条)、反 AI 套路自检结果、实施时需注意的项目约定和坑点
 
 ---
 

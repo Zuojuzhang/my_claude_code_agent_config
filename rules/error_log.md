@@ -2,7 +2,7 @@
 
 以下规则从历史错误中提炼，每条都被用户反复纠正过，必须严格遵守。
 
-### -1. 派 agent 时禁止把含明文 key 的整份 .env 塞进 prompt
+### 1. 派 agent 时禁止把含明文 key 的整份 .env 塞进 prompt
 
 **触发条件**：派 code-writer / code-reviewer 等 sub-agent 时，prompt 里需要描述 .env 改动
 
@@ -18,7 +18,7 @@
 - 让 agent 自己 Read 文件取真实值（agent 内部 Read 的内容不会无限放大到本体上下文）
 - 涉及配置切换、回滚路径时只描述结构，让 agent 看代码取细节
 
-### 0. prompt 优化禁止用「反例对照」结构
+### 2. prompt 优化禁止用「反例对照」结构
 
 **触发条件**：给 LLM 写或改 system prompt 时
 
@@ -33,11 +33,11 @@
 - 反例要表达的禁止行为用规则陈述（「禁止 X」「必须 Y」），不要具体写出错误措辞
 - 避免「再说一遍」式重复加强同一指令，会让模型形成机械应答（嘴上说但没执行）
 
-### 1. SKILL.md不得依赖具体代码实现
+### 3. SKILL.md不得依赖具体代码实现
 
 SKILL.md是行为指引和原则文档，描述做什么和为什么，不引用具体的变量名、函数名、类名等代码实现细节。代码层的API说明放在脚本文件自身的docstring里，SKILL.md只描述原则和流程。
 
-### 2. 所有SKILL.md必须包含no_ai_style规则
+### 4. 所有SKILL.md必须包含no_ai_style规则
 
 **触发条件**: 创建或修改任何SKILL.md时
 
@@ -45,7 +45,7 @@ SKILL.md是行为指引和原则文档，描述做什么和为什么，不引用
 
 **禁止**: 创建SKILL.md时遗漏no_ai_style规则。no_ai_style是所有skill的基线约束，不是可选项。
 
-### 3. Windows下curl传中文JSON必乱码
+### 5. Windows下curl传中文JSON必乱码
 
 **触发条件**: 在Windows的Bash/PowerShell里用curl调外部API（飞书、企微等），JSON body含中文字段（title、name、content等）
 
@@ -60,19 +60,7 @@ SKILL.md是行为指引和原则文档，描述做什么和为什么，不引用
 
 **禁止**: 直接 `curl -d '{"title":"中文..."}'`，无论看起来多简单。
 
-### 4. 直播答疑归档目录用英文，不用中文
-
-**触发条件**: live-qa-workflow skill或任何归档目录命名时
-
-**正确**: `YYYYMMDD_live_question`（例：`20260508_live_question`）
-
-**错误**: `YYYYMMDD_直播答疑`、`直播答疑_YYYYMMDD` 等含中文的目录名
-
-**例外**: 飞书文档/PPT文件名内部可以保留中文（如`YYYYMMDD 直播答疑笔记.docx`），只是文件夹名必须英文
-
-**Why**: 中文目录名在Windows shell、git、跨工具协作里频繁触发编码问题，路径出错排查成本高
-
-### 5. 项目CLAUDE.md不存在时禁止动手
+### 6. 项目CLAUDE.md不存在时禁止动手
 
 **触发条件**: 接到具体任务，cwd或目标路径在某个具体项目下，且该项目根目录无CLAUDE.md
 

@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature or bugfix, before writing implementation code
+description: Use ONLY when user explicitly requests strict test-first TDD (red→green→refactor cycle). NOT auto-triggered for general implementation; the default workflow has tests written by the orchestrator after implementation, not before. Trigger keywords: "strict TDD", "先写测试", "test-driven", "red green refactor", "test-first discipline".
 ---
 
 # Test-Driven Development (TDD)

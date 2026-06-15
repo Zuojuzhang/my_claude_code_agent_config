@@ -1,6 +1,6 @@
 ---
 name: ux-bug-check
-description: 从用户视角扫描代码，查找体验bug。按8类清单（第一印象、操作反馈、状态完整性、文案、流程、认知负担、情绪、用户控制感）逐项扫描，输出按严重度分级的问题清单。供 ux-reviewer agent 调用，也可独立调用。触发词：从用户角度看一下、用户用起来怎么样、有没有体验bug、体验有没有问题。
+description: 从用户视角扫描代码，查找体验bug。按7类清单（第一印象、操作反馈、状态完整性、流程、认知负担、情绪、用户控制感）逐项扫描，输出按严重度分级的问题清单。供 ux-reviewer agent 调用，也可独立调用。触发词：从用户角度看一下、用户用起来怎么样、有没有体验bug、体验有没有问题。
 ---
 
 ## 核心视角
@@ -20,26 +20,25 @@ description: 从用户视角扫描代码，查找体验bug。按8类清单（第
 - 不重新设计（不给具体UI规格、不给字号色值，只给改进方向）
 - 不要求画像、不要场景代入
 
-## 八类清单
+## 七类清单
 
-按以下顺序逐类扫，每类Read对应references。第4类调用 ux-writing skill。
+按以下顺序逐类扫，每类Read对应references。
 
 | 类 | 视角 | references |
 |----|------|------------|
 | 1. 第一印象 | 3秒内能不能看懂 | `references/first-impression.md` |
 | 2. 操作反馈 | 按下去有没有反应 | `references/operation-feedback.md` |
 | 3. 状态完整性 | 空/加载/错误/边界态全吗 | `references/state-completeness.md` |
-| 4. 文案 | 说不说人话 | 调用 ux-writing skill |
-| 5. 流程 | 走得顺不顺 | `references/flow-design.md` |
-| 6. 认知负担 | 要不要琢磨 | `references/cognitive-load.md` |
-| 7. 情绪 | 让人不爽吗 | `references/emotion-design.md` |
-| 8. 用户控制感 | 被推着走吗 | `references/user-control.md` |
+| 4. 流程 | 走得顺不顺 | `references/flow-design.md` |
+| 5. 认知负担 | 要不要琢磨 | `references/cognitive-load.md` |
+| 6. 情绪 | 让人不爽吗 | `references/emotion-design.md` |
+| 7. 用户控制感 | 被推着走吗 | `references/user-control.md` |
 
 ## 执行步骤
 
 1. 接到改动文件清单，Read 改动文件做静态分析（看HTML/JSX/Vue结构、文案、状态处理、错误处理路径）
-2. 有可跑界面时通过 webapp-testing skill 跑起来观察真实交互
-3. 八类逐项扫，第4类调用 ux-writing skill 的清单
+2. 有可跑界面时通过 webapp-testing skill（`Read ~/.claude/skills/webapp-testing/SKILL.md`）跑起来观察真实交互
+3. 七类逐项扫
 4. 每条发现打严重度：
    - **阻断**：用户会卡住、不知所措、放弃任务
    - **困惑**：能继续但需要琢磨、容易猜错
@@ -57,11 +56,10 @@ description: 从用户视角扫描代码，查找体验bug。按8类清单（第
 静态分析（Read 代码 + Grep 文案 + 看HTML结构）能覆盖：
 
 - 第3类状态完整性：能看出有没有写空状态/loading/错误处理分支
-- 第4类文案：直接看文案字符串
-- 第5类流程：看路由、步骤组件、表单结构
-- 第6类认知负担：看按钮样式、链接样式、信息层级类名
-- 第7类情绪：看错误信息文案、删除确认逻辑
-- 第8类用户控制感：看是否有退出/撤销/关闭逻辑
+- 第4类流程：看路由、步骤组件、表单结构
+- 第5类认知负担：看按钮样式、链接样式、信息层级类名
+- 第6类情绪：看错误信息文案、删除确认逻辑
+- 第7类用户控制感：看是否有退出/撤销/关闭逻辑
 
 需要实跑才能确认的：
 

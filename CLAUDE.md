@@ -29,9 +29,9 @@
 - [rules/feishu_doc_write.md](rules/feishu_doc_write.md) — 飞书文档写入规则、约束与调用流程
 - [rules/ui_engineering_baseline.md](rules/ui_engineering_baseline.md) — 前端工程正确性底线清单，ui-designer/code-reviewer按需Read
 
-## 先测试后实现
+## 测试
 
-逻辑层代码先TDD，纯体验代码跳过，TDD skills路径：[skills/test-driven-development/SKILL.md](skills/test-driven-development/SKILL.md)
+测试归本体写，code-writer 不写测试。何时写、谁写、阈值、并行派工模板见 [rules/sub_agent_dispatch.md](rules/sub_agent_dispatch.md) 的「何时写测试 / 谁写测试」章节。
 
 ## 思维原则
 
@@ -61,3 +61,4 @@
 - **密钥安全**：密钥、token、密码不进代码、不进 commit、不进日志
 - **方案先行**：大改动前先在 Plan Mode 出方案，我确认后再动手
 - **任务归档**：任何非平凡任务的工作日志，必须归档到项目文件夹中，保留工作日志
+- **并行执行 tool call**：同一 message 内多个 tool call 默认并发跑。独立操作（多文件 Read、多文件 Edit、多个 Grep、独立 Bash 命令）直接并行，wall-clock 显著省时间。同一文件多次 Edit 按声明顺序自动串行执行，不会冲突。**只在有顺序依赖时才分回合串行**：先 Read 才能精确 Edit、先 Bash 拿输出才能判断下一步、破坏性操作前要确认前一步结果。规则化重构（边界清晰的多文件改动）最吃这套
