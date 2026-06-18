@@ -28,6 +28,7 @@
 - [rules/error_log.md](rules/error_log.md) — 历史错误提炼的强制规则。**每次对话开始时必须Read**
 - [rules/feishu_doc_write.md](rules/feishu_doc_write.md) — 飞书文档写入规则、约束与调用流程
 - [rules/ui_engineering_baseline.md](rules/ui_engineering_baseline.md) — 前端工程正确性底线清单，ui-designer/code-reviewer按需Read
+- [rules/design_template.md](rules/design_template.md) — 完整设计系统模板（色彩/字体/间距/圆角/阴影/动效）。**最低优先级**，日常设计走「项目现状 > frontend-design > design_template」链，仅当用户明确要求新建设计系统/重构/统一规范/对齐token时由ui-designer启用，平时不加载
 
 ## 测试
 

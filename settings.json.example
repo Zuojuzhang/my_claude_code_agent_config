@@ -1,0 +1,41 @@
+{
+  "includeCoAuthoredBy": true,
+  "cleanupPeriodDays": 30,
+  "env": {
+    "EXAMPLE_API_BASE": "https://your-endpoint.example.com",
+    "EXAMPLE_TOKEN": "<在本地 settings.json 填真值，禁止提交真实密钥>"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(ls:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run lint:*)",
+      "Read(//**)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)"
+    ],
+    "ask": []
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "echo \"$(basename \"$PWD\") | $(git branch --show-current 2>/dev/null)\""
+  }
+}
