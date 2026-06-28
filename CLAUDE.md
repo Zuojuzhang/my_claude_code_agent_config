@@ -26,6 +26,7 @@
 
 - [rules/no_ai_style.md](rules/no_ai_style.md) — 禁用AI腔表达。**每次对话开始时必须Read**
 - [rules/error_log.md](rules/error_log.md) — 历史错误提炼的强制规则。**每次对话开始时必须Read**
+- [rules/code_rules.md](rules/code_rules.md) — 编码行为准则（先思考、简单优先、外科手术式改动、目标驱动）。**涉及写代码/改代码的任务开始前必须Read**
 - [rules/feishu_doc_write.md](rules/feishu_doc_write.md) — 飞书文档写入规则、约束与调用流程
 - [rules/ui_engineering_baseline.md](rules/ui_engineering_baseline.md) — 前端工程正确性底线清单，ui-designer/code-reviewer按需Read
 

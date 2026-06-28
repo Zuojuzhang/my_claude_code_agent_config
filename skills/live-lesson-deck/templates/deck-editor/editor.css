@@ -1,0 +1,35 @@
+/* ===== Deck Editor Template ===== */
+body.editing .hz{pointer-events:none}
+body.editing [contenteditable]{outline:1.5px dashed var(--line-2);outline-offset:3px;border-radius:3px;cursor:text}
+body.editing [contenteditable]:hover{outline-color:var(--editor-accent,var(--accent))}
+body.editing [contenteditable]:focus{outline:2px solid var(--editor-accent,var(--accent));outline-offset:3px;background:var(--editor-selected-bg,rgba(110,231,240,0.10))}
+body.editing .slide.current .frag,
+body.editing .slide.current .fragR{opacity:1 !important;visibility:visible !important;transform:none !important;filter:none !important;pointer-events:auto !important;transition:none !important}
+body.editing .slide.current [data-ek].ed-selected{outline:2px solid var(--editor-accent,var(--accent));outline-offset:3px;background:var(--editor-selected-bg,rgba(110,231,240,0.10))}
+#edbar{
+  position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:130;
+  display:none;align-items:center;gap:8px;flex-wrap:wrap;white-space:nowrap;max-width:96vw;
+  max-height:30vh;overflow:auto;
+  background:var(--text);color:#fff;
+  padding:8px 12px;border-radius:var(--r-pill);box-shadow:var(--shadow-lg);
+  font-family:var(--font-body);font-size:14px;
+}
+body.editing #edbar{display:flex}
+#edbar b,#edbar .edhint{flex:0 0 auto}
+#edbar b{font-weight:600;letter-spacing:0.04em}
+#edbar button{
+  font-family:inherit;font-size:13px;color:var(--text);background:var(--bg-2);
+  border:none;border-radius:var(--r-sm);padding:5px 11px;cursor:pointer;
+  white-space:nowrap;flex:0 0 auto;
+  transition:background var(--d-fast) var(--ease),color var(--d-fast) var(--ease);
+}
+#edbar button:hover{background:var(--editor-accent,var(--accent));color:var(--editor-on-accent,#1A1C22)}
+#edbar button.on{background:var(--editor-accent,var(--accent));color:var(--editor-on-accent,#1A1C22)}
+#edbar .edhint{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:0.02em}
+body.moving [data-ek]{cursor:move;-webkit-user-select:none;user-select:none;outline:1.5px dashed var(--line-2);outline-offset:3px;border-radius:3px;transition:none}
+body.moving [data-ek]:hover{outline-color:var(--editor-accent,var(--accent))}
+body.moving [data-ek].dragging{outline:2px solid var(--editor-accent,var(--accent));box-shadow:var(--shadow-md);position:relative;z-index:30}
+body:not(.editing) .ek-empty{display:none}
+body.editing .ek-empty{opacity:0.4}
+body.editing .ek-empty:empty{min-width:60px;min-height:0.9em;display:inline-block}
+

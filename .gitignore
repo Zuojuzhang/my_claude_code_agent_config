@@ -43,3 +43,7 @@ session-env/
 # 技能eval工作区与打包产物（scratch，非配置本体）
 skills/*-workspace/
 skills/business-analyst.zip
+
+# macOS 元数据
+.DS_Store
+**/.DS_Store

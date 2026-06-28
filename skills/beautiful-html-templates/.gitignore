@@ -1,0 +1,18 @@
+.DS_Store
+TEMPLATE_SPEC.md
+AUTHORING_PROMPT.md
+previews/
+Demo recordings/
+
+# Local reference / generation artifacts
+chinese-font-guide.html
+template-to-design-md.prompt.md
+AUTHORING_PROMPT copy.md
+.tools/
+decks/
+docs/
+gallery-showcase*.mp4
+mockups/
+quiver-output/
+scripts/shot-slides.mjs
+showcase.mp4
