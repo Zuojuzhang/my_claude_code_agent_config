@@ -2,15 +2,17 @@
   <b>编辑模式</b>
   <button id="edHi">高亮所选</button>
   <button id="edClr">清高亮</button>
-  <button id="edBold" style="font-weight:800" title="加粗 (Ctrl/Cmd+B)">B</button>
+  <button id="edBold" style="font-weight:800" title="加粗所选文字 (Ctrl/Cmd+B)">B</button>
+  <button id="edUnbold" title="清除当前文本框里的编辑加粗，保留版式默认粗体">清粗</button>
   <button id="edItalic" style="font-style:italic" title="斜体 (Ctrl/Cmd+I)">I</button>
   <button id="edUnder" style="text-decoration:underline" title="下划线 (Ctrl/Cmd+U)">U</button>
-  <button id="edTextDel" title="删除当前选中的文本框，带动画的文本框也会一起移除">删文本框</button>
+  <button id="edPrev" class="ed-nav" title="切到上一页，不改变deck顺序">上一页</button>
+  <button id="edNext" class="ed-nav" title="切到下一页，不改变deck顺序">下一页</button>
+  <button id="edTextDel" class="ed-danger requires-save" title="删除当前选中的文本框，带动画的文本框也会一起移除">删文本框</button>
   <button id="edMove" title="开启后可拖动文字改变位置，双击还原单个">挪位置</button>
-  <button id="edPagePrev" title="把当前页往前移动一页">页前移</button>
-  <button id="edPageNext" title="把当前页往后移动一页">页后移</button>
-  <button id="edPageDel" title="删除当前页，并同步讲师注记">删本页</button>
+  <button id="edPagePrev" class="ed-struct requires-save" title="把当前页在deck顺序里前移一页">本页前移</button>
+  <button id="edPageNext" class="ed-struct requires-save" title="把当前页在deck顺序里后移一页">本页后移</button>
+  <button id="edPageDel" class="ed-danger requires-save" title="删除当前页，并同步讲师注记">删本页</button>
   <button id="edExit">退出 (Esc)</button>
   <span class="edhint" id="edStatus">未授权文件</span>
 </div>
-
