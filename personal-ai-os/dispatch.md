@@ -1,6 +1,6 @@
 # 模型调度守则
 
-版本：v1.0（2026-07-08）
+版本：v1.1（2026-07-08建，07-11增harness分工与设计轨）
 
 ## 总原则
 
@@ -8,6 +8,13 @@
 - 派工prompt必须自包含：绝对路径、执行步骤、产出路径、自检清单，骨架见templates.md
 - 执行者可能跑在Codex或kimi code里，没有Claude Code的skill机制，一律让它Read流程文档的绝对路径
 - 同一消息里能并行的独立工作包一起派，不串行排队
+
+## harness分工（Claude Code / Codex / kimi code）
+
+- **Claude Code**：主力。全部内容生产轨、判断类工作、重要编码（线上产品的核心改动）。整套制度、skill、memory、subagent调度都长在这里
+- **Codex**：编码副驾。两个用法：①跨模型审查，上线前的改动让Codex独立review Claude写的代码，同一模型审自己的代码有共同盲区，跨模型才是真独立；②并行工作包，Claude主线忙时把边界清楚的编码任务丢过去
+- **kimi code**：机械层执行器。跑templates.md的T4/T5、数据抓取清洗、飞书批量读写、格式转换。会话第一句给SYSTEM.md路径，或直接贴自包含模板
+- 纪律：按任务分，不按半个任务分（中途换harness上下文带不过去，交接成本比省的quota贵）；判断类活不喂机械层，改错的时间比token贵
 
 ## 编码轨
 
@@ -50,6 +57,24 @@
 
 - 机械层任务：微信读书落盘用T4，周巡库用T5
 - 产出可机器验证（文件数、frontmatter字段、条数核对），验证方式写在模板里
+
+## 设计轨（网页与界面的视觉工作）
+
+### 动手阶段的审美来源（按页面类型路由）
+
+权威在`~/.claude/rules/sub_agent_dispatch.md`「不派时怎么处理」和`~/.claude/agents/code-writer.md`第7条，本文件不复述。一句话版：营销类页面（落地页/官网/招募页/作品集）用taste-skill，中文页面配`~/.claude/rules/cn_typography.md`字体补丁；产品UI/看板/多步应用界面用frontend-design（taste-skill自我声明不覆盖这类）。
+
+### 新营销页四步流水线
+
+1. 定调：从`~/.claude/design-md/`（74个品牌设计体系库）挑气质接近的，拷它的DESIGN.md进项目根当锚
+2. 查参：ui-ux-pro-max按产品类型查配色、字体搭配、UX守则
+3. 动手：按上面的页面类型路由加载审美skill；整页新方案可先派ui-designer出方案文档
+4. 审查：impeccable的audit模式过一遍，`~/.claude/rules/ui_engineering_baseline.md`当硬门槛
+
+### 纪律
+
+- 「动手」类设计skill一个任务只一个主导，指名调用，不靠自动触发碰运气
+- 「参考」类（design-md品牌库、ui-ux-pro-max数据库）可叠加使用，它们只供信息不抢方向盘
 
 ## 什么活不派（留主线）
 
