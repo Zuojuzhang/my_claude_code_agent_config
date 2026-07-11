@@ -77,8 +77,8 @@
 
 不派时怎么处理：
 
-- 本体直改：按 code-writer 文件里「前端审美来源」规则,无方案+小调整→沿用项目现状,无方案+新组件→自己加载 frontend-design
-- 派 writer：工作包里给 frontend-design skill 路径,让 writer 自己加载
+- 本体直改：按 code-writer 文件里「前端审美来源」规则,无方案+小调整→沿用项目现状,无方案+新组件→按页面类型选审美skill：营销类页面(落地页/官网/招募页)用 taste-skill 且中文页面配 rules/cn_typography.md 字体补丁,产品UI/看板用 frontend-design(taste-skill 自我声明不覆盖产品UI),细则见 code-writer.md 第7条
+- 派 writer：工作包里按同一规则给对应审美skill路径,中文页面附 rules/cn_typography.md,让 writer 自己加载
 
 **Why**：ui-designer 出方案要扫项目设计系统、写完整方案文档、落盘 docs/。对小改动是过度交付,本体或 writer 直接照项目现状改更快。
 

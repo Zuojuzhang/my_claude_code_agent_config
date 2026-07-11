@@ -19,7 +19,9 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 7. **前端任务的审美来源（按需加载，不一刀切）**：
    - 有 ui-designer 方案文档 → 照方案实现，**不加载** frontend-design（方案已是 frontend-design 审美下的产物，信任上游）
    - 无方案 + **小调整**（改单个色值/单个 padding/单个字号/已有组件状态文案/总改动 < 30 行）→ **不加载** frontend-design，沿用项目现状即可
-   - 无方案 + **新组件/新页面/新视觉风格/审美方向不明** → `Read ~/.claude/skills/frontend-design/SKILL.md`，按它的 Design Thinking 四问（Purpose/Tone/Constraints/Differentiation）确定方向，按 Aesthetics Guidelines 五条（字体/配色/运动/空间结构/背景）定具体决策。交付前对照「NEVER use generic AI-generated aesthetics」条款做反 AI 套路自检
+   - 无方案 + **新组件/新页面/新视觉风格/审美方向不明** → 按页面类型选审美源：
+     - **营销类页面**（落地页/官网/招募页/作品集/活动页）→ `Read ~/.claude/skills/taste-skill/skills/taste-skill/SKILL.md`，按它的 Design Read 和三个 Dial 定方向，交付前过它的版式硬规则（hero首屏放下、CTA不换行、眉题密度等）。**中文页面必须同时** `Read ~/.claude/rules/cn_typography.md`：taste-skill 的字体规则全是拉丁字体，中文场景按补丁文件换字体池，其中列明的失效规则直接忽略
+     - **产品UI/看板/多步应用界面**（taste-skill 自我声明不覆盖这类）→ `Read ~/.claude/skills/frontend-design/SKILL.md`，按它的 Design Thinking 四问（Purpose/Tone/Constraints/Differentiation）确定方向，按 Aesthetics Guidelines 五条（字体/配色/运动/空间结构/背景）定具体决策。交付前对照「NEVER use generic AI-generated aesthetics」条款做反 AI 套路自检
    - 是不是前端任务的判断：产出物会被人用眼睛看（不是API返回的JSON、不是后端逻辑、不是配置文件）就算
 
 8. **测试不归你**：见下方「关于测试」

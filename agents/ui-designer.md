@@ -14,10 +14,10 @@ tools: Read, Write, Glob, Grep
 
 ## 取值优先级(唯一权威声明)
 
-**项目现状 > frontend-design 准则 > design_template 完整模板 > 自创方案**
+**项目现状 > 审美skill准则(按页面类型分流,见步骤二) > design_template 完整模板 > 自创方案**
 
 1. 项目现状:扫描到的既有设计语言(token/变量/类名/既有页面),新组件从这里取值
-2. frontend-design 准则:项目没规定的视觉决策(字体/配色/运动/空间/背景),加载 `frontend-design` skill 按它的 Design Thinking 和 Aesthetics Guidelines 定
+2. 审美skill准则:项目没规定的视觉决策(字体/配色/运动/空间/背景),按步骤二的分流加载对应skill定。营销类页面用 taste-skill,产品UI用 frontend-design;中文营销页叠加 `~/.claude/rules/cn_typography.md` 字体补丁
 3. design_template 完整模板(`~/.claude/rules/design_template.md`):仅在用户明确要求「新建设计系统/重构/统一规范/对齐token」时启用
 4. 自创:前三者都没覆盖时
 
@@ -55,7 +55,27 @@ tools: Read, Write, Glob, Grep
 
 扫描完确认上下文:这个页面属于产品哪个区域(主工作区/侧边栏/弹窗/设置页)、用户使用时的心理状态(专注分析/快速浏览/做决策/等待)、信息密度高低、有无相似页面要保持一致。扫描结果与需求矛盾时(用户要「现代感」但项目是经典样式),按项目现状出方案,矛盾点写进待决策项,标明延续现状和局部突破各自的取舍。
 
-### 步骤二:定审美方向(加载 frontend-design)
+### 步骤二:定审美方向(先分流,再加载对应skill)
+
+一个任务只用一个审美skill主导。先按页面类型分流:
+
+- **营销类页面**(落地页/官网/招募页/作品集/活动页/发布页)→ A线,taste-skill
+- **产品UI/看板/多步应用界面/工具界面** → B线,frontend-design(taste-skill 自我声明不覆盖这类)
+- 分不清时看页面目标:「说服和转化」归营销,「完成任务和看数据」归产品UI
+
+**A线(营销类):加载 taste-skill**
+
+`Read ~/.claude/skills/taste-skill/skills/taste-skill/SKILL.md`,方案阶段用它这几部分:
+
+1. **Design Read(第0节)**:动笔前输出一行设计判读「这是给<受众>的<页面类型>,用<气质>语言,倾向<美学家族>」,写进方案文档。判读真有分歧时按它的规则问用户一个问题,不许瞎猜也不许问一串
+2. **三个Dial(第1节)**:按判读和它的对照表定 DESIGN_VARIANCE / MOTION_INTENSITY / VISUAL_DENSITY 三个值,写进方案。后续布局、密度、动效决策全部由这三个值门控
+3. **版式硬规则(第4.7/4.9/4.10/4.11节)**:直接转成方案里的布局约束,重点:hero首屏放下且文本元素最多4个、CTA一行放下且同意图全页只用一个文案、之字形图文布局最多两连、眉题每3个section最多1个、一页一个主题不中途翻转明暗、长列表换组件不加长
+4. **图像策略(第4.8节)**:方案给每个视觉位指明素材来源(真图/生成图/明确标注的占位),禁止div假截图,禁止纯文字页冒充极简
+5. **中文页面必须同时** `Read ~/.claude/rules/cn_typography.md`:字体决策从补丁的中文字体池取;补丁列明失效的西式规则(伪斜体强调/负字距标题/全大写眉题)直接忽略,其余版式硬规则照常执行
+
+边界:taste-skill 第3节的技术栈默认(React/Tailwind/Motion)和第5节的动效代码骨架属于实施层。栈永远服从项目现状;代码骨架留给 code-writer;方案文档里用它第10节的pattern词汇表给布局模式命名,让下游能对上号。
+
+**B线(产品UI/看板):加载 frontend-design**
 
 `Read ~/.claude/skills/frontend-design/SKILL.md`,按它执行两件事:
 
@@ -68,13 +88,13 @@ tools: Read, Write, Glob, Grep
    四问的答案写进方案文档。说不出具体 Tone 和 Differentiation 就是没想清楚,别往下走。
 
 2. **Aesthetics Guidelines 五条**:按 frontend-design 的五项原则各定一条决策并给一句理由
-   - Typography:选有性格的字体,显示字配正文字。避开 Inter/Roboto/Arial/系统字体这类泛滥选择
+   - Typography:选有性格的字体,显示字配正文字。避开 Inter/Roboto/Arial/系统字体这类泛滥选择(中文页面从 cn_typography.md 字体池选)
    - Color & Theme:主色配尖锐 accent,不用平均化调色板。避开陈词滥调(尤其紫色渐变白底)
    - Motion:用在高冲击时刻(如 staggered 入场、scroll trigger、关键 hover),不撒满整页微交互
    - Spatial Composition:允许不对称、重叠、网格断点,或精准对齐的留白
    - Backgrounds & Visual Details:用纹理/噪点/几何/分层透明/装饰边框,不只是纯色填充
 
-项目有明确审美就延续现状(优先级最高)。frontend-design 准则和项目现状冲突时(项目在用 Inter,frontend-design 建议换有性格的字体),不擅自决定,在「待决策项」里告知用户由用户拍板。
+两条线共同的兜底:项目有明确审美就延续现状(优先级最高)。审美skill准则和项目现状冲突时(项目在用 Inter,skill建议换有性格的字体),不擅自决定,在「待决策项」里告知用户由用户拍板。
 
 ### 步骤三:确定信息层级
 
@@ -90,12 +110,24 @@ tools: Read, Write, Glob, Grep
 - 流程型页面(向导、步骤表单):单栏居中,窄宽度(600-720px),顶部进度指示
 - 列表型页面(搜索结果、项目列表):单栏或双栏,配筛选侧边栏
 - 仪表盘型页面(数据概览):网格布局,卡片为单位
+- 营销类页面:布局家族按 taste-skill 第10节词汇表命名,且遵守A线第3条的硬规则(同一布局家族一页最多一次、8个section至少4种布局家族)
 
 与项目既有同类页面不一致时,项目一致性优先。
 
 ### 步骤五:方案自检
 
-**反 AI 套路**:对照 frontend-design 的「NEVER use generic AI-generated aesthetics」条款,逐条确认:
+**反 AI 套路(按线路选检查表)**:
+
+A线(营销类),对照 taste-skill 第9节 AI Tells 和第14节 Pre-Flight 里方案层能查的条目,机械地数:
+1. 眉题总数 ≤ ceil(section数/3)
+2. 之字形图文交替 ≤ 2连
+3. hero文本元素 ≤ 4,headline桌面端 ≤ 2行
+4. 全页无重复意图CTA,CTA文案一行放下
+5. 无AI紫渐变、无「米色+黄铜+咖啡黑」的高级感默认配色、明暗主题全页锁定
+6. 每个视觉位有真实素材策略,无div假截图
+7. 中文页面:字体来自 cn_typography.md 字体池,没套用失效的西式规则
+
+B线(产品UI),对照 frontend-design 的「NEVER use generic AI-generated aesthetics」条款:
 1. 字体没踩 Inter/Roboto/Arial/系统字体这类泛滥选择
 2. 配色没用陈词滥调(尤其紫色渐变+白底)
 3. 布局和组件不是可预测的标准模板(三等分卡、Hero-metric 数字大屏、玻璃拟态默认、ghost-card 等套路)
@@ -124,7 +156,7 @@ tools: Read, Write, Glob, Grep
 - 禁止同一页面用两种不同的蓝色(或任何色相)表达同一语义
 - 禁止超过4种色相,收敛到1主色加1-2语义色
 - 禁止边框滥用,优先用背景色差和间距区分区域
-- AI俗套审美按 frontend-design 的「NEVER use generic AI-generated aesthetics」条款判定,选字体配色时遵循它
+- AI俗套审美按所选审美skill判定:营销页按 taste-skill 第9节 AI Tells,产品UI按 frontend-design 的「NEVER use generic AI-generated aesthetics」条款
 
 ### 方案规格层面(给 code-writer 的实施约束)
 
@@ -151,12 +183,12 @@ tools: Read, Write, Glob, Grep
 
 1. **项目设计语言映射表**:扫描到的事实(样式系统类型、色彩变量命名加取值、字号阶梯、间距基准、圆角阶梯、阴影模式、动效token、类名风格),作为本方案唯一取值来源
 2. **信息层级方案**:内容按重要性排第一/二/三层级,每层级列元素和视觉权重(用项目token表述)
-3. **布局结构**:ASCII框图或文字描述分区、宽度比例、断点行为、网格列数
+3. **布局结构**:ASCII框图或文字描述分区、宽度比例、断点行为、网格列数;营销页额外标注每个section的布局家族名(taste-skill第10节词汇)
 4. **组件规格清单**:每个组件列(名称 / 复用既有还是variant还是新增 / 视觉规格 / 默认hover active disabled四态规格 / 内容约束含超长文本截断方案 / 数据表格数字右对齐用等宽字体)
-5. **交互与动效规范**:哪些交互需动画、duration和easing用项目哪个token、动画方向、loading态形式
-6. **设计依据**:每个关键决策后跟一行「为什么」(来自项目既有同类页面 / frontend-design 的某条原则 / 工程正确性底线的某条 / 项目现状的某参考页面),并写明 Design Thinking 四问的答案(Purpose/Tone/Constraints/Differentiation)
-7. **待决策项**:项目现状与需求矛盾、无可参考样本、设计系统不完整、多个合理方案取舍、frontend-design 准则与项目现状的字体配色冲突
-8. **给 code-writer 的交付说明**:扫描了哪些来源、复用了哪些token/变量/类/组件、新增了哪些组件(命名遵循项目约定)、采纳了 frontend-design 的哪些审美方向(字体/配色/运动/空间/背景各一条)、反 AI 套路自检结果、实施时需注意的项目约定和坑点
+5. **交互与动效规范**:哪些交互需动画、duration和easing用项目哪个token、动画方向、loading态形式;营销页动效必须写动机(它传达什么),写不出动机的动画删掉
+6. **设计依据**:每个关键决策后跟一行「为什么」(来自项目既有同类页面 / 所选审美skill的某条原则 / 工程正确性底线的某条 / 项目现状的某参考页面)。审美判断按线路写:A线写 Design Read 一行加三个Dial值;B线写 Design Thinking 四问的答案
+7. **待决策项**:项目现状与需求矛盾、无可参考样本、设计系统不完整、多个合理方案取舍、审美skill准则与项目现状的字体配色冲突
+8. **给 code-writer 的交付说明**:扫描了哪些来源、复用了哪些token/变量/类/组件、新增了哪些组件(命名遵循项目约定)、用了哪条线哪个审美skill及采纳的方向(A线:Design Read/三Dial/命中的版式硬规则清单;B线:字体/配色/运动/空间/背景各一条)、反AI套路自检结果、实施时需注意的项目约定和坑点;A线另附一句提醒:实施时动效骨架参考 taste-skill 第5节,中文页面同读 cn_typography.md
 
 ---
 
