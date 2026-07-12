@@ -22,6 +22,13 @@
 
 何时派code-writer、reviewer触发条件、reviewer循环2轮上限、测试归属、行号标注要求，全部以那份文件为准。
 
+mattpocock工程流补充（均为用户主动斜杠触发，不自动跳出）：
+
+- 动手前的工程需求拷问用`/grill-with-docs`（AI连环追问把设计问清楚，顺手落ADR和CONTEXT.md）。产品侧的需求拆解仍走product-breakdown，两者不混
+- 超过一个会话装不下的大工程，规划用`/wayfinder`（工单地图，一张张解决）。首次使用前在目标项目跑一次`/setup-matt-pocock-skills`选tracker，个人沙箱项目选本地markdown即可
+- 测试方法论`/tdd`见sub_agent_dispatch.md「何时写测试」
+- 调研分工：仓库内、文档、API事实核查型调研归research skill（后台agent，产出带引用的repo内markdown）；多源网络深度调研报告归deep-research
+
 ## 内容轨
 
 ### 备课/课件生产

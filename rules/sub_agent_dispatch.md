@@ -214,7 +214,7 @@
 
 ### 何时写测试 / 谁写测试
 
-默认本体写测试。code-writer 不写测试,只管实现。测试用例由本体看着实现接口和 AC 直接写出来,跑通就交付。
+测试方法论权威：`~/.claude/skills/tdd/SKILL.md`（mattpocock 版 TDD）。命中「写测试的场景」的编码任务,默认按它的红绿循环走,不再是「实现完后补测试」。code-writer 不写测试,只管实现。
 
 **写测试的场景**：
 
@@ -232,11 +232,17 @@
 - 试验性脚本、一次性任务、原型 demo
 - 简单纯函数 / 小工具函数（< 50 行,输入输出明确）
 
+**怎么写（tdd skill 的三条硬规则,动手前 Read `~/.claude/skills/tdd/SKILL.md`）**：
+
+- **先定 seam 再写测试**:测试只写在公共边界(seam)上。动手前列出要测的 seam 跟用户确认,没确认的 seam 不写测试。不追求全覆盖,测试预算花在关键路径和复杂逻辑上
+- **垂直切片**:一条失败测试→最小实现让它变绿→下一条。禁止一次把测试全写完再实现(horizontal slicing,它明令的反模式:批量测试验证的是想象中的行为)
+- **重构不进红绿循环**,归 code-review 阶段。断言禁止 implementation-coupled(mock 内部协作者/测私有方法/绕过接口查数据库)和 tautological(用代码同样的算法算期望值),判据见 `~/.claude/skills/tdd/tests.md` 和 `mocking.md`
+
 **谁写测试**：
 
-- **默认本体直接写**：实现完后看接口和 AC,直接写 2-5 条断言,跑通就交付
-- **改动非常大（≥ 1000 行 或 ≥ 20 文件,远超 writer 派工阈值）**：本体在另一条 message 里并行派 general-purpose subagent 写测试。这是为了在大改动里把"写实现"和"写测试"两件事并行,省 wall-clock
-- **用户明确要求严格 TDD（红→绿→重构）**：本体加载 `~/.claude/skills/test-driven-development/SKILL.md`,按 skill 的红绿循环走（先写失败测试,再写实现,最后重构）,不走默认的"实现完后写测试"。触发词：「严格 TDD」「先写测试」「test-driven」「红绿重构」
+- **默认本体写**：按红绿循环,测试和实现在本体手里交替推进
+- **派 code-writer 的改动**：本体先按 AC 定 seam 写失败测试(红),工作包里给测试文件路径,writer 的完成标准是让测试变绿,writer 不许改测试
+- **改动非常大（≥ 1000 行 或 ≥ 20 文件,远超 writer 派工阈值）**：本体在另一条 message 里并行派 general-purpose subagent 写测试,省 wall-clock。此时红绿循环退化为两段式:测试和实现并行,合流时以测试为准
 
 并行派测试 subagent 的工作包模板：
 
@@ -252,6 +258,7 @@
 - 按 AC 列表每条写至少 1 个断言,核心路径 + 边界条件覆盖
 - 黑盒测试（不假设实现细节）,按 AC 接口写
 - 测试要可独立跑通（不依赖 writer 实现细节,只依赖 AC 定义的接口）
+- 只测工作包里列出的 seam（公共边界）,禁止 implementation-coupled 和 tautological 断言（判据 Read ~/.claude/skills/tdd/tests.md）
 
 ## 注意
 - 不读 writer 还没写完的实现文件,按 AC 假设接口
