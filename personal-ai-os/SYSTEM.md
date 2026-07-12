@@ -26,7 +26,7 @@
 | 直播答疑归档 | 每周一次 | `~/.claude/skills/live-qa-archive/SKILL.md` | 飞书wiki笔记+讲课PPT |
 | B站视频文稿 | 不定期 | `~/.claude/skills/bilibili-script/SKILL.md`（待建，见maintenance.md待建清单） | 可朗读的视频文稿 |
 
-次要工作流：编码开发（调度看dispatch.md编码轨）、数据分析（`~/.claude/skills/business-analyst`）、知识库归档与巡库（见下节）。
+次要工作流：编码开发（调度看dispatch.md编码轨）、界面与营销页设计（dispatch.md设计轨：营销页taste-skill加cn_typography中文补丁，产品UI用frontend-design）、数据分析（`~/.claude/skills/business-analyst`）、知识库归档与巡库（见下节）。
 
 ## 知识库架构（主库已定，不再纠结选型）
 

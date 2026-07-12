@@ -33,6 +33,14 @@
 
 **派 ui-designer 或一口气拆解时，本体在派工 prompt 里直接给出当天日期（YYYYMMDD格式）**，不让agent自己取系统日期（跨平台不可靠）。
 
+### mattpocock 工程流路由（编码轨内）
+
+- **触发方式实情**：`/grill-with-docs`、`/wayfinder`、`/setup-matt-pocock-skills` 只能手动斜杠触发；grilling、tdd、research、prototype、domain-modeling 带自动触发（含中文触发词）。撞车裁决：需求拆解归口不变（产品侧 product-breakdown / feature-breakdown），grilling 只接工程设计的把关拷问，不接产品结构梳理
+- **工程需求拷问**：动手前用 `/grill-with-docs`（连环追问，落 ADR 和 CONTEXT.md）。产品侧仍走 product-breakdown，两者不混
+- **大工程**（≥ 1000 行 / ≥ 20 文件，或超过一个会话装不下）：规划用 `/wayfinder`（工单地图，一张张解决）。首次使用前在目标项目跑一次 `/setup-matt-pocock-skills` 选 tracker，个人沙箱项目选本地 markdown。**大工程的编码必须完整遵循 tdd 红绿循环，无体量豁免**（前提是改动命中「写测试的场景」；纯 UI 样式、文案、配置这类按性质不写测试的场景，不因体量升级为要写测试，判据见下方「何时写测试」）
+- **规格等价**：grill-with-docs 拷问产出的结论文档与 ADR、wayfinder 的工单，与 AC 文档（docs/pm-*-ac.md）互为等价规格。注意 CONTEXT.md 是术语表不是规格（domain-modeling 明文规定），所以拷问会话收尾必须把结论落成一份文档（目标、边界、验收要点，落 docs/ 或写进工单），派 code-writer 时给这份落盘物的路径，不必为已拷问清楚的工程需求再走一遍 product-breakdown
+- **调研分工**：查仓库、查文档、查 API 事实归 research skill（后台 agent，产出带引用的 repo 内 markdown）。不再使用 deep-research（2026-07-13 用户决定，调研统一走 research）
+
 ### 产品类工作的执行方式
 
 本体上下文最全，第一手判断由本体来给，够重才进skill流程。
@@ -77,6 +85,7 @@
 
 不派时怎么处理：
 
+- 边界消歧（2026-07-13）：新增**完整**营销页（落地页/官网/招募页整页）默认走上面的「派」，由 ui-designer 按A线 taste-skill 出方案再交 writer 实现；下面这条「本体直接加载 taste-skill」只适用于 <500 行的小体量界面活,或用户明说不要方案文档直接做
 - 本体直改：按 code-writer 文件里「前端审美来源」规则,无方案+小调整→沿用项目现状,无方案+新组件→按页面类型选审美skill：营销类页面(落地页/官网/招募页)用 taste-skill 且中文页面配 rules/cn_typography.md 字体补丁,产品UI/看板用 frontend-design(taste-skill 自我声明不覆盖产品UI),细则见 code-writer.md 第7条
 - 派 writer：工作包里按同一规则给对应审美skill路径,中文页面附 rules/cn_typography.md,让 writer 自己加载
 
@@ -232,38 +241,18 @@
 - 试验性脚本、一次性任务、原型 demo
 - 简单纯函数 / 小工具函数（< 50 行,输入输出明确）
 
-**怎么写（tdd skill 的三条硬规则,动手前 Read `~/.claude/skills/tdd/SKILL.md`）**：
+**怎么写（前三条是 tdd skill 的硬规则,第四条是本体系的体量分级;动手前 Read `~/.claude/skills/tdd/SKILL.md`）**：
 
 - **先定 seam 再写测试**:测试只写在公共边界(seam)上。动手前列出要测的 seam 跟用户确认,没确认的 seam 不写测试。不追求全覆盖,测试预算花在关键路径和复杂逻辑上
 - **垂直切片**:一条失败测试→最小实现让它变绿→下一条。禁止一次把测试全写完再实现(horizontal slicing,它明令的反模式:批量测试验证的是想象中的行为)
-- **重构不进红绿循环**,归 code-review 阶段。断言禁止 implementation-coupled(mock 内部协作者/测私有方法/绕过接口查数据库)和 tautological(用代码同样的算法算期望值),判据见 `~/.claude/skills/tdd/tests.md` 和 `mocking.md`
+- **重构不进红绿循环**,归审查阶段(code-reviewer agent 或本体自检;tdd skill 原文提到的 code-review skill 在本体系的对应物就是 code-reviewer)。断言禁止 implementation-coupled(mock 内部协作者/测私有方法/绕过接口查数据库)和 tautological(用代码同样的算法算期望值),判据见 `~/.claude/skills/tdd/tests.md` 和 `mocking.md`
+- **体量分级**:本体直改阈值内的小修复(单文件 < 500 行),且 seam 就是被修函数或接口本身、无歧义时,seam 自确认不必停等,汇报里说明测了哪个 seam 即可;大工程(≥ 1000 行 / ≥ 20 文件或 wayfinder 级)必须完整走 seam 确认和红绿循环,无豁免
 
 **谁写测试**：
 
 - **默认本体写**：按红绿循环,测试和实现在本体手里交替推进
 - **派 code-writer 的改动**：本体先按 AC 定 seam 写失败测试(红),工作包里给测试文件路径,writer 的完成标准是让测试变绿,writer 不许改测试
-- **改动非常大（≥ 1000 行 或 ≥ 20 文件,远超 writer 派工阈值）**：本体在另一条 message 里并行派 general-purpose subagent 写测试,省 wall-clock。此时红绿循环退化为两段式:测试和实现并行,合流时以测试为准
-
-并行派测试 subagent 的工作包模板：
-
-```
-你是测试工程师,给 <功能简述> 写测试用例。
-
-## 输入
-- AC文档：<docs/pm-*-ac.md 绝对路径>
-- 测试框架：<项目用的测试框架,如 pytest / jest / vitest>
-- 待测代码位置：<本体或 writer 即将实现的文件路径>
-
-## 测试要求
-- 按 AC 列表每条写至少 1 个断言,核心路径 + 边界条件覆盖
-- 黑盒测试（不假设实现细节）,按 AC 接口写
-- 测试要可独立跑通（不依赖 writer 实现细节,只依赖 AC 定义的接口）
-- 只测工作包里列出的 seam（公共边界）,禁止 implementation-coupled 和 tautological 断言（判据 Read ~/.claude/skills/tdd/tests.md）
-
-## 注意
-- 不读 writer 还没写完的实现文件,按 AC 假设接口
-- 假设跟 writer 解读不一致时,标在测试注释里,本体回头核对
-```
+- **改动非常大（≥ 1000 行 / ≥ 20 文件或 wayfinder 级）**：没有体量豁免。先用 /wayfinder 把大工程拆成工单,每张工单内按红绿循环推进（本体写 seam 失败测试,自己实现或派 writer 让测试变绿）。tdd 的垂直切片本来就把大工程切成小片,「太大所以并行批量写测试」是 horizontal slicing 反模式,禁止。旧的并行派测试 subagent 模板已随本条废除（2026-07-13,理由:批量黑盒测试验证的是想象中的行为,与 tdd 硬规则直接冲突）
 
 ### 什么情况下不需要完整流程
 

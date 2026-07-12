@@ -31,3 +31,18 @@
 ## 2026-07-11 装入mattpocock工程流骨干
 
 用户点名grill-with-docs和wayfinder，连依赖闭包共装7个：grill-with-docs（拷问出规格加落ADR/CONTEXT.md）、wayfinder（跨会话大工程的工单地图）、grilling、domain-modeling（前两者的硬依赖）、research、prototype（wayfinder工单类型依赖）、setup-matt-pocock-skills（tracker配置向导，wayfinder的本地tracker文档在它目录里）。dispatch.md编码轨补两行路由。注意：research与已有deep-research有触发重叠，分工是仓库/文档事实核查归research、多源网络调研报告归deep-research。
+
+## 2026-07-13 审计修复批次（Fable 5全面审计后，按用户逐条决定执行）
+
+冲突类：checklist B1对齐分镜思维（B1-2按知识点取舍、B1-7页粒度按分镜，课件页时长按知识点合计2到4分钟算）；code-writer第5条接受grill-with-docs/wayfinder产物为AC等价规格；sub_agent_dispatch新增「mattpocock工程流路由」节（触发方式如实描述、大工程强制tdd、规格等价、调研统一走research），dispatch.md编码轨只留指针归一权威；code-writer删「请同时写测试」旧口子，改为「给测试路径则变绿、禁改测试」；code-writer第7条B分支（产品UI）补cn_typography中文字体补丁；T1拆三段（草模/风格样张/铺全），段间人工过门，dispatch备课节同步。
+死链类：重建rules/feishu_credentials.local.md（凭证源自live-qa-archive/.env，该项目非git仓库无泄漏，脚本无明文）；webapp-testing补官方scripts/with_server.py；tdd里code-review对应物点名为code-reviewer；制度不再引用deep-research（调研统一research）。
+不合理类：maintenance修改权补例外二（会话内当场确认直改留痕，proposals留给AI主动发起）；tdd加体量分级（小修复seam自确认，大工程无豁免）；git rm重复的no-ai-style skill（rules/no_ai_style.md为唯一权威）；死条目统计接WORKLOG命中留痕（checklist/maintenance/VERIFY三处闭环）。
+版本：checklist/maintenance/templates/VERIFY升v1.1，dispatch升v1.2。R2（T5巡库派机械层）按用户决定暂不处理。修复后已派8个核查员对抗验证。
+
+## 2026-07-13 修复批次的对抗核查与二轮修正
+
+8核查员并行核查一轮修复：4簇通过，抓出2个high加7个low。二轮修正：①大工程TDD矛盾清除（删「≥1000行并行派测试subagent两段式」条款及其模板，大工程改为wayfinder拆工单后逐单红绿循环；补前提「命中写测试场景才强制，UI样式文案按性质豁免不因体量升级」）；②T1c补内容来源和素材真实化步骤，checklist新增B1-8素材真实条，堵占位成片漏洞；③grill-with-docs产物措辞修正（无spec产物，CONTEXT.md是术语表不算规格，拷问收尾必须落结论文档），code-writer全链路（第3条、第5条、输出判定、完整版模板字段）同步接受等价规格；④B1-7对齐SKILL原文（一页1到2个分镜）；⑤T1a草模构成对齐SKILL（问题行不是要点）；⑥T1b补禁止段、风格方向输入、1版或3版口径；⑦dispatch备课节「每页取舍」改「知识点取舍」；⑧「三条硬规则」标题改为如实的三加一表述；⑨全局CLAUDE.md测试节删「并行派工模板」字样。残留low不修项：WORKLOG历史条目的旧deep-research描述（日志只增不改）。
+
+## 2026-07-13 探针发现的7处空白合入（proposals通道首用）
+
+用户批准proposals/20260713-probe-findings.md全部7项后合入：P1全局CLAUDE.md任务清单加界面设计项加SYSTEM.md次要工作流同步（修设计轨入口断链）；P2 sub_agent_dispatch消歧（完整营销页默认派ui-designer，本体直接taste-skill限小体量）；P3课件skill分流加「先查现状」规则；P4五道门加WORKLOG门状态记账；P5文稿产出目录定为workspace/bilibili-scripts/；P6内容轨补「默认主线执行」；P7 personal-note/CLAUDE.md回写微信读书管道。提议文件按流程合入后删除。
