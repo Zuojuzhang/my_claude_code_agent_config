@@ -47,8 +47,10 @@
 
 ### B站视频文稿
 
-- skill建成前（见maintenance.md待建清单）：文稿由人加顶层模型主线共创，不外派
-- skill建成后：选题和核心观点人定（判断节点2），初稿日常层按T3跑，终稿必须过checklist.md的B2组
+- 流程权威：`~/.claude/skills/linyi-lyi-scriptwriter/SKILL.md`（2026-07-13定案：采用林亦LYi风格蒸馏skill，不再自建bilibili-script。skill源项目与206份语料在`/Users/zrf/workspace/20260711-linyi-lyi-distill/`，更新语料重跑其scripts重蒸馏）
+- 选题和核心观点人定（判断节点2），AI可列候选带理由；三种模式按skill选：成稿（给选题走全流水线）、改稿（现有初稿改出林亦味）、骨架（只搭结构人来填肉）
+- 初稿可按T3外派日常层；终稿验收以skill自检8条为主、checklist.md B2组为辅，两者冲突时（林亦体的戏剧化修辞对上no_ai_style个别条款）以skill为准，冲突点交付时标注
+- 素材红线（skill明文）：用户没给真实素材，实验数据和个人轶事必须标注「示意，需替换为实测」，对外发布前人工替换，禁止编造当真实交付
 - 产出目录：统一落`/Users/zrf/workspace/bilibili-scripts/`项目（首次使用先建目录、README和CLAUDE.md），用户当次另指定的除外
 
 ### 数据分析报告
@@ -72,7 +74,7 @@
 1. 定调：从`~/.claude/design-md/`（74个品牌设计体系库）挑气质接近的，拷它的DESIGN.md进项目根当锚
 2. 查参：ui-ux-pro-max按产品类型查配色、字体搭配、UX守则
 3. 动手：按上面的页面类型路由加载审美skill；整页新方案可先派ui-designer出方案文档
-4. 审查：impeccable的audit模式过一遍，`~/.claude/rules/ui_engineering_baseline.md`当硬门槛
+4. 审查：impeccable的audit模式过一遍，界面文字过`~/.claude/skills/ui-copy-check/SKILL.md`七类（产出重写文字），`~/.claude/rules/ui_engineering_baseline.md`当硬门槛
 
 ### 纪律
 

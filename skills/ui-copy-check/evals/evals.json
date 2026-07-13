@@ -1,0 +1,26 @@
+{
+  "skill_name": "ui-copy-check",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "drinkwater-audit",
+      "prompt": "帮我审一下喝水提醒助手的界面文案，很多地方感觉不够专业。页面在 /Users/zrf/workspace/drink-water-helper/ 下的 index.html、tutorial.html、guide.html、ask.html。把有问题的文案列出来并给出改后的版本，产出一份markdown报告。",
+      "expected_output": "一份审查报告：每条问题含位置、原文、原因、重写后的文字；能查到JS里的动态文案；不冤枉正常按钮",
+      "files": ["/Users/zrf/workspace/drink-water-helper/index.html", "/Users/zrf/workspace/drink-water-helper/tutorial.html", "/Users/zrf/workspace/drink-water-helper/guide.html", "/Users/zrf/workspace/drink-water-helper/ask.html"]
+    },
+    {
+      "id": 1,
+      "eval_name": "memory-components-audit",
+      "prompt": "我产品里Memory功能这几个组件的界面文案总觉得像AI写的，不像正经产品。帮我检查并改写：/Users/zrf/workspace/ai-secretary/web/src/components/MemoryPanel.vue、MemoryNotice.vue、MemoryRejectedDrawer.vue。输出问题加改后文案的markdown报告。",
+      "expected_output": "报告指出空状态讲解机制长句、第一人称拟人语气等问题，每条带可直接替换的重写文字",
+      "files": ["/Users/zrf/workspace/ai-secretary/web/src/components/MemoryPanel.vue", "/Users/zrf/workspace/ai-secretary/web/src/components/MemoryNotice.vue", "/Users/zrf/workspace/ai-secretary/web/src/components/MemoryRejectedDrawer.vue"]
+    },
+    {
+      "id": 2,
+      "eval_name": "raw-strings-rewrite",
+      "prompt": "这8条是我产品界面里的文案，帮我把不专业的改专业，输出一份原文对照改后的markdown表格：1「说一句话,我帮你记日程」（空状态标题）2「聊天时我觉察到值得记的事会直接记下来,并在底下告诉你记了什么,几秒后消失」（空状态正文）3「没清掉,你的对话还在,再试一次」（清空失败提示）4「正在录音,再点一下停止」（录音状态提示）5「怎么称呼你」（昵称输入框placeholder）6「（缺内容）」（卡片内容缺失兜底）7「这事你之前否过,没记」（记忆变更通知条）8「悄悄记了一条：」（自动记录通知前缀）",
+      "expected_output": "8条全部有重写；重写无聊天腔语气词、无许诺式措辞、空状态不超过一句",
+      "files": []
+    }
+  ]
+}

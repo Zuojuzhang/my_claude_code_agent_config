@@ -11,6 +11,8 @@ Usage:
 
 No dependencies beyond the Python stdlib are required.
 """
+from __future__ import annotations
+
 
 import argparse
 import base64

@@ -43,7 +43,7 @@ model: sonnet
 - 分段Read的offset必须严格递增
 - Grep总数不超过15次，主要用Read做静态分析
 - 静态分析为主，但第1、2类必须依赖实跑
-- 总Read上限 = 改动文件数 × 3
+- 总Read上限 = 10 + 改动文件数 × 3（前面的10覆盖方法论固定读数：ux-bug-check的SKILL加7个references加模板加项目CLAUDE.md，这些不占改动文件的配额）
 - prompt里给了行号就直接用，不要重新前30行试图自己定位
 
 ## 跟 code-reviewer 的并行

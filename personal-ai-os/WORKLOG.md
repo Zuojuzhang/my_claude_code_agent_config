@@ -46,3 +46,23 @@
 ## 2026-07-13 探针发现的7处空白合入（proposals通道首用）
 
 用户批准proposals/20260713-probe-findings.md全部7项后合入：P1全局CLAUDE.md任务清单加界面设计项加SYSTEM.md次要工作流同步（修设计轨入口断链）；P2 sub_agent_dispatch消歧（完整营销页默认派ui-designer，本体直接taste-skill限小体量）；P3课件skill分流加「先查现状」规则；P4五道门加WORKLOG门状态记账；P5文稿产出目录定为workspace/bilibili-scripts/；P6内容轨补「默认主线执行」；P7 personal-note/CLAUDE.md回写微信读书管道。提议文件按流程合入后删除。
+
+## 2026-07-13 B站文稿工作流定案
+
+用户决定采用林亦LYi风格蒸馏skill（linyi-lyi-scriptwriter，源项目workspace/20260711-linyi-lyi-distill，206份语料、v2自评78到80分），不再自建bilibili-script。接线：SYSTEM.md主工作流表、dispatch.md文稿节（三模式、自检8条为主B2为辅、素材示意红线）、T3模板重写启用、maintenance.md待建清单销项、memory同步。三条主工作流至此全部有流程权威。
+
+## 2026-07-14 新建ui-copy-check（界面文案专业度检查skill）
+
+用户痛点：AI产物的UI文字爱写解释性话语、不够官方。建法走挖矿加蒸馏加留出集验收：3矿工扫真实产物（课件38页、AI小秘36组件、作品集页）归纳18类特征；蒸馏成单文件skill（七类检查：解释机制上墙/教学腔/聊天腔拟人化/语域不齐/黑话泄漏/自言自语辩解/字数形态线，附五条防过矫例外）；留出集（drink-water-helper，未参与挖矿）A/B验收暴露v1三缺陷（硬线诱发字数洁癖、语域基准对叙事页失效、没写明查JS字符串），v1.1修订后烟测零过矫、检出与裁判真值重合5条加新增3条，服役。接线：dispatch设计轨审查步、ux-bug-check第6类下钻指针、checklist B1第9条（T1c同步九条口径）。副产物：drink-water-helper和AI小秘各攒一批带重写文字的可直接落地的文案修复清单。
+
+## 2026-07-14 ui-copy-check第二轮测试收官，v1.2服役
+
+三线测试（10个agent）：A线弹幕POC靶子选择失误（4个HTML实为抖音官方页面抓包件非项目UI），但4份报告全部正确拒审无一硬编，意外验证拒审纪律；B线04课件抓到5处「待填」占位页挂在正式翻页序列（阻断级真问题）加3处编辑器黑话泄漏，deference_ok为真（讲课上墙文字未被越界改动，仅1条标点级轻度过矫）；C线干净对照两次运行一次零误报一次2误报（alt文本、footer英文），据此v1.2微修两行（alt等辅助文本不算可见文字、整区块统一外语语域是设计）。测试就此收官：检出力、过矫、稳定性、场景边界、误报、拒审全部有数据。副产物：04课件的占位页和data-day泄漏需修，测试期间三批文案修复清单待用户排期。
+
+## 2026-07-14 ui-copy-check走完skill-creator官方eval，用户验收通过
+
+三用例（喝水助手审查、Memory组件审查、8条裸文案改写）各跑with/without skill，官方grader按每用例5条assertions打分：带skill 86.7%对不带73.3%，净增13个百分点。分用例：简单改写任务打平（模型裸奔就够），组件审查5/5对4/5（分水岭是人称处理：skill版去人设中性化，裸版反向强化聊天人设），全站审查3/5对2/5（skill版位置引用抽查9处全对，裸版行号错引到CSS）。用户看过审阅页后裁决：用skill整体文案风格更舒适。ui-copy-check v1.2定版。过程踩坑记录：aggregate_benchmark要求run-1子目录层级和grading.json的summary块；generate_review.py需要Python 3.10语法，已给它打from __future__ import annotations兼容补丁（本机3.9.6）。
+
+## 2026-07-14 proposals批复合入（ux-skill两项）
+
+用户批准20260714-ux-skill-fixes全部两项后合入：ux-reviewer的Read上限改为「10+改动文件数×3」（方法论固定读数不占配额，消除与skill流程的自相矛盾）；ux-bug-check的user-control.md新增第7条检查项（破坏性确认框须带目标唯一识别信息，附实证），SKILL.md核心视角节补「清单抓结构性抓不住情境性、用户真实反馈优先沉淀为检查项」的边界认知。提议文件按流程删除。课件占位页用户自理，三批文案修复清单缓办。

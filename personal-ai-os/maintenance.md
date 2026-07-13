@@ -41,7 +41,7 @@
 
 ## 待建清单（Fable 5窗口内优先）
 
-- [ ] **bilibili-script skill**：需要用户提供3到5篇自己满意的B站文稿（或视频转文字），用于提炼真实风格规则。没有样本不硬建，凭空建出来的风格规则是编的
+- [x] **B站文稿skill**：2026-07-13定案，采用林亦LYi风格蒸馏skill（linyi-lyi-scriptwriter，源项目`/Users/zrf/workspace/20260711-linyi-lyi-distill/`），不再自建bilibili-script
 - [ ] **课件流程实测**：拿一个真实项目走一遍T1全流程，用过程中暴露的问题修订live-lesson-deck和checklist的B1
 - [ ] **微信读书管道实测**：导出一本书的划线跑T4，验证模板可用
 - [ ] **Concepts索引初建**：第一次全量巡库，把存量Notes挂上索引
