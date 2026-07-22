@@ -47,3 +47,7 @@ skills/business-analyst.zip
 # macOS 元数据
 .DS_Store
 **/.DS_Store
+
+# 本地备份文件（不入库）
+settings.json.backup*
+*.bak-*

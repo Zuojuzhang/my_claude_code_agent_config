@@ -1,0 +1,2173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
+  <title>定位 Skill 系统说明报告</title>
+  <style>
+    :root {
+      --paper: #ffffff;
+      --surface: #f7f8f7;
+      --surface-2: #f1f3f2;
+      --ink: #172233;
+      --muted: #67707b;
+      --line: #dce1e3;
+      --line-strong: #bac4c9;
+      --blue: #1b416f;
+      --blue-soft: #eaf0f6;
+      --red: #bd493a;
+      --red-soft: #f8ece9;
+      --green: #34745b;
+      --green-soft: #eaf3ef;
+      --gold: #a4761f;
+      --gold-soft: #f7f0df;
+      --shadow: 0 18px 45px rgba(23, 34, 51, 0.08);
+      --serif: "Songti SC", "STSong", "Source Han Serif SC", "Noto Serif CJK SC", serif;
+      --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --max: 1180px;
+      --nav-height: 68px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 100px;
+      background: var(--paper);
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.75;
+      letter-spacing: 0;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    button,
+    a { -webkit-tap-highlight-color: transparent; }
+
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: -60px;
+      z-index: 999;
+      padding: 8px 12px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 4px;
+      transition: top 160ms ease;
+    }
+
+    .skip-link:focus { top: 12px; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      min-height: var(--nav-height);
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .nav-shell {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: var(--nav-height);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--blue);
+      border-radius: 50%;
+      color: var(--blue);
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .brand-copy {
+      display: grid;
+      line-height: 1.1;
+    }
+
+    .brand-copy strong {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .brand-copy small {
+      margin-top: 4px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.16em;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 3px;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .menu::-webkit-scrollbar { display: none; }
+
+    .menu a {
+      position: relative;
+      flex: 0 0 auto;
+      padding: 22px 9px 20px;
+      color: #59636e;
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1;
+      transition: color 160ms ease;
+    }
+
+    .menu a::after {
+      content: "";
+      position: absolute;
+      left: 9px;
+      right: 9px;
+      bottom: 0;
+      height: 2px;
+      background: var(--blue);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 160ms ease;
+    }
+
+    .menu a:hover,
+    .menu a[aria-current="true"] {
+      color: var(--blue);
+    }
+
+    .menu a[aria-current="true"]::after { transform: scaleX(1); }
+
+    .progress {
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 1px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      will-change: transform;
+    }
+
+    main { overflow: clip; }
+
+    .shell {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 670px;
+      display: grid;
+      align-items: center;
+      padding: 88px 0 76px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(340px, 0.82fr);
+      gap: 72px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 20px;
+      color: var(--blue);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin-top: 0; }
+
+    h1,
+    h2,
+    .display-number {
+      font-family: var(--serif);
+      font-weight: 500;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin-bottom: 24px;
+      font-size: clamp(48px, 6vw, 82px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    h1 span { color: var(--red); }
+
+    .hero-lede {
+      max-width: 720px;
+      margin-bottom: 32px;
+      color: #42505d;
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.65;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .hero-tags li {
+      padding: 7px 10px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border: 1px solid #d5e0ea;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .hero-panel {
+      position: relative;
+      padding: 28px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      left: -1px;
+      top: 28px;
+      width: 4px;
+      height: 66px;
+      background: var(--red);
+    }
+
+    .hero-panel h2 {
+      margin-bottom: 22px;
+      font-size: 23px;
+    }
+
+    .answer-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: answer;
+    }
+
+    .answer-list li {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      gap: 12px;
+      align-items: start;
+      color: #3b4855;
+      font-size: 14px;
+      counter-increment: answer;
+    }
+
+    .answer-list li::before {
+      content: "0" counter(answer);
+      color: var(--red);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.9;
+    }
+
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 56px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric {
+      min-height: 116px;
+      padding: 22px 26px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:first-child { padding-left: 0; }
+    .metric:last-child { border-right: 0; }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--blue);
+      font-family: var(--serif);
+      font-size: 34px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .band {
+      padding: 108px 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .band.alt { background: var(--surface); }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: 36px;
+      align-items: start;
+      margin-bottom: 56px;
+    }
+
+    .section-index {
+      color: var(--blue);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+    }
+
+    .section-title h2 {
+      margin-bottom: 14px;
+      font-size: clamp(34px, 4vw, 52px);
+      line-height: 1.15;
+    }
+
+    .section-title p {
+      max-width: 770px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .definition {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .definition article {
+      padding: 28px 30px;
+      border-right: 1px solid var(--line);
+    }
+
+    .definition article:first-child { padding-left: 0; }
+    .definition article:last-child { border-right: 0; }
+
+    .definition .label,
+    .card-index,
+    .mini-label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--red);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .definition h3 {
+      margin-bottom: 8px;
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .definition p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .positioning-line {
+      margin-top: 44px;
+      padding: 28px 32px;
+      color: #fff;
+      background: var(--blue);
+      border-left: 5px solid var(--red);
+    }
+
+    .positioning-line small {
+      display: block;
+      margin-bottom: 8px;
+      color: #cbd8e4;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+    }
+
+    .positioning-line p {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(19px, 2.2vw, 27px);
+      line-height: 1.6;
+    }
+
+    .principle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .principle-card,
+    .feature-card,
+    .future-card {
+      min-height: 220px;
+      padding: 26px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .principle-card:nth-child(2) .card-index,
+    .principle-card:nth-child(5) .card-index { color: var(--green); }
+
+    .principle-card:nth-child(3) .card-index,
+    .principle-card:nth-child(6) .card-index { color: var(--gold); }
+
+    .principle-card h3,
+    .feature-card h3,
+    .future-card h3 {
+      margin-bottom: 10px;
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+    }
+
+    .principle-card p,
+    .feature-card p,
+    .future-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .theory-map {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 36px;
+      margin-top: 52px;
+      align-items: stretch;
+    }
+
+    .theory-core {
+      display: grid;
+      place-items: center;
+      min-height: 370px;
+      padding: 34px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .theory-core div { max-width: 340px; }
+
+    .theory-core strong {
+      display: block;
+      margin-bottom: 14px;
+      font-family: var(--serif);
+      font-size: 34px;
+      font-weight: 500;
+    }
+
+    .theory-core p {
+      margin-bottom: 0;
+      color: #d6e0ea;
+      font-size: 15px;
+    }
+
+    .theory-layers {
+      display: grid;
+      gap: 10px;
+    }
+
+    .theory-layer {
+      display: grid;
+      grid-template-columns: 115px 1fr;
+      gap: 20px;
+      align-items: center;
+      padding: 20px 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--red);
+      border-radius: 5px;
+    }
+
+    .theory-layer:nth-child(2) { border-left-color: var(--green); }
+    .theory-layer:nth-child(3) { border-left-color: var(--gold); }
+    .theory-layer:nth-child(4) { border-left-color: var(--blue); }
+
+    .theory-layer b {
+      font-family: var(--serif);
+      font-size: 17px;
+    }
+
+    .theory-layer span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .architecture {
+      display: grid;
+      gap: 8px;
+      max-width: 1020px;
+      margin: 0 auto;
+    }
+
+    .arch-layer {
+      display: grid;
+      grid-template-columns: 86px 190px 1fr 170px;
+      gap: 20px;
+      align-items: center;
+      min-height: 84px;
+      padding: 16px 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+    }
+
+    .arch-layer:nth-child(1) { border-left: 5px solid var(--red); }
+    .arch-layer:nth-child(2) { border-left: 5px solid var(--gold); }
+    .arch-layer:nth-child(3) { border-left: 5px solid var(--green); }
+    .arch-layer:nth-child(4) { border-left: 5px solid var(--blue); }
+    .arch-layer:nth-child(5) { border-left: 5px solid #5d6670; }
+    .arch-layer:nth-child(6) { border-left: 5px solid #8c5b75; }
+
+    .arch-no {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+    }
+
+    .arch-layer h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    .arch-layer p,
+    .arch-output {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .arch-output {
+      padding-left: 16px;
+      border-left: 1px solid var(--line);
+    }
+
+    .contract-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .contract-item {
+      padding: 20px;
+      background: var(--blue-soft);
+      border-radius: 5px;
+    }
+
+    .contract-item strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--blue);
+      font-size: 14px;
+    }
+
+    .contract-item span {
+      color: #596977;
+      font-size: 12px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      counter-reset: phase;
+    }
+
+    .phase {
+      position: relative;
+      min-height: 260px;
+      padding: 24px 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--blue);
+      border-radius: 6px;
+      counter-increment: phase;
+    }
+
+    .phase:nth-child(2) { border-top-color: var(--red); }
+    .phase:nth-child(3) { border-top-color: var(--gold); }
+    .phase:nth-child(4) { border-top-color: var(--green); }
+    .phase:nth-child(5) { border-top-color: #8c5b75; }
+
+    .phase::after {
+      content: "";
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      width: 14px;
+      border-top: 1px solid var(--line-strong);
+    }
+
+    .phase:last-child::after { display: none; }
+
+    .phase .phase-no {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+
+    .phase h3 {
+      margin: 10px 0 16px;
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .phase ol {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .phase li + li { margin-top: 7px; }
+
+    .gate-map {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 28px;
+      margin-top: 38px;
+      align-items: start;
+    }
+
+    .gate-box {
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .gate-box h3 {
+      margin-bottom: 16px;
+      font-family: var(--serif);
+      font-size: 22px;
+    }
+
+    .gate-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 22px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .gate-list li {
+      position: relative;
+      padding-left: 18px;
+      color: #4c5864;
+      font-size: 13px;
+    }
+
+    .gate-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.72em;
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+    }
+
+    .status-stack {
+      display: grid;
+      gap: 8px;
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      padding: 13px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .status strong {
+      display: grid;
+      gap: 1px;
+      min-width: 0;
+      font-family: var(--sans);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .status code {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 600;
+      line-height: 1.4;
+      opacity: 0.72;
+      overflow-wrap: anywhere;
+    }
+
+    .status > span {
+      min-width: 0;
+      line-height: 1.55;
+    }
+    .status.execute { color: #22533f; background: var(--green-soft); }
+    .status.validate { color: #755619; background: var(--gold-soft); }
+    .status.insufficient { color: #7e342b; background: var(--red-soft); }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .feature-card { min-height: 198px; }
+
+    .feature-card .symbol {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      margin-bottom: 18px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border-radius: 50%;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .feature-card:nth-child(3n + 2) .symbol { color: var(--green); background: var(--green-soft); }
+    .feature-card:nth-child(3n) .symbol { color: var(--red); background: var(--red-soft); }
+
+    .boundary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .boundary-panel {
+      padding: 28px;
+      background: #fff;
+      border-top: 4px solid var(--blue);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .boundary-panel:nth-child(2) { border-top-color: var(--gold); }
+    .boundary-panel:nth-child(3) { border-top-color: var(--red); }
+
+    .boundary-panel h3 {
+      margin-bottom: 18px;
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .clean-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .clean-list li {
+      padding: 10px 0;
+      color: #4e5964;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .security-note {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 28px;
+      margin-top: 38px;
+      padding: 26px 30px;
+      color: #fff;
+      background: var(--green);
+      border-radius: 6px;
+    }
+
+    .security-note strong {
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+    }
+
+    .security-note p {
+      margin: 0;
+      color: #e3f0ea;
+      font-size: 14px;
+    }
+
+    .scenario-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .scenario {
+      padding: 32px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+    }
+
+    .scenario.company { border-top: 5px solid var(--blue); }
+    .scenario.personal { border-top: 5px solid var(--red); }
+
+    .scenario-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      margin-bottom: 22px;
+    }
+
+    .scenario-title h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 30px;
+      font-weight: 500;
+    }
+
+    .scenario-title span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+
+    .scenario-case {
+      display: grid;
+      grid-template-columns: 132px 1fr;
+      gap: 20px;
+      padding: 17px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .scenario-case strong { font-size: 14px; }
+    .scenario-case p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .use-path {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .use-step {
+      padding: 18px;
+      background: var(--surface);
+      border-left: 3px solid var(--line-strong);
+    }
+
+    .use-step strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .use-step span { color: var(--muted); font-size: 12px; }
+
+    .quality-layout {
+      display: grid;
+      grid-template-columns: minmax(380px, 0.86fr) minmax(0, 1.14fr);
+      gap: 56px;
+      align-items: center;
+    }
+
+    .radar-wrap {
+      padding: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+    }
+
+    .radar-wrap svg {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .radar-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .quality-copy h3 {
+      margin-bottom: 12px;
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 500;
+    }
+
+    .quality-copy > p { color: var(--muted); }
+
+    .score-bars {
+      display: grid;
+      gap: 13px;
+      margin-top: 24px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 70px 1fr 42px;
+      gap: 14px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .bar {
+      height: 8px;
+      overflow: hidden;
+      background: #e7eaeb;
+      border-radius: 2px;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      background: var(--blue);
+    }
+
+    .score-row:nth-child(2) .bar span { background: var(--red); }
+    .score-row:nth-child(3) .bar span { background: var(--gold); }
+    .score-row:nth-child(4) .bar span { background: var(--green); }
+    .score-row:nth-child(5) .bar span { background: #8c5b75; }
+
+    .quality-gates {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 54px;
+    }
+
+    .q-gate {
+      min-height: 176px;
+      padding: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+    }
+
+    .q-gate strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--blue);
+      font-size: 14px;
+    }
+
+    .q-gate p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .evidence-ladder {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 34px;
+      margin-top: 54px;
+      align-items: stretch;
+    }
+
+    .ladder {
+      display: grid;
+      gap: 7px;
+      align-content: center;
+    }
+
+    .ladder-step {
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 18px;
+      align-items: center;
+      padding: 12px 18px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 4px;
+    }
+
+    .ladder-step:nth-child(2) { width: 91%; background: #315b83; }
+    .ladder-step:nth-child(3) { width: 82%; background: #4c708e; }
+    .ladder-step:nth-child(4) { width: 73%; background: #6f8799; }
+    .ladder-step b { font-family: var(--serif); font-size: 16px; }
+    .ladder-step span { color: #e5edf3; font-size: 11px; }
+
+    .evidence-copy {
+      padding: 30px;
+      background: var(--green-soft);
+      border-left: 4px solid var(--green);
+    }
+
+    .evidence-copy h3 {
+      margin-bottom: 12px;
+      font-family: var(--serif);
+      font-size: 23px;
+    }
+
+    .evidence-copy p,
+    .evidence-copy li { color: #456052; font-size: 13px; }
+    .evidence-copy ul { margin: 16px 0 0; padding-left: 18px; }
+
+    .report-anatomy {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(270px, 0.45fr);
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+    }
+
+    .anatomy-stage {
+      min-height: 500px;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background: var(--surface-2);
+      border-right: 1px solid var(--line);
+    }
+
+    .anatomy-canvas {
+      width: min(100%, 780px);
+      min-height: 430px;
+      padding: 28px;
+      background: #fff;
+      border: 1px solid var(--line-strong);
+      box-shadow: 0 10px 28px rgba(23, 34, 51, 0.08);
+    }
+
+    .anatomy-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .anatomy-toolbar strong {
+      color: var(--blue);
+      font-family: var(--serif);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .anatomy-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(190px, 0.55fr);
+      gap: 22px;
+      padding-top: 28px;
+    }
+
+    .anatomy-main h3 {
+      max-width: 520px;
+      margin-bottom: 14px;
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .anatomy-main > p {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .anatomy-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-top: 24px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .anatomy-metrics span {
+      min-height: 68px;
+      padding: 11px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .anatomy-metrics b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--blue);
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .anatomy-side {
+      padding: 18px;
+      background: var(--gold-soft);
+      border-top: 3px solid var(--gold);
+    }
+
+    .anatomy-side strong {
+      display: block;
+      margin-bottom: 9px;
+      font-family: var(--serif);
+      font-size: 16px;
+    }
+
+    .anatomy-side p {
+      margin-bottom: 12px;
+      color: #665938;
+      font-size: 10px;
+    }
+
+    .anatomy-notes {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 34px;
+    }
+
+    .anatomy-notes h3 {
+      margin-bottom: 12px;
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .anatomy-notes p {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .anatomy-notes ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .deliverables {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .deliverable {
+      padding: 22px;
+      background: var(--surface);
+      border-top: 3px solid var(--blue);
+    }
+
+    .deliverable:nth-child(2) { border-top-color: var(--green); }
+    .deliverable:nth-child(3) { border-top-color: var(--red); }
+
+    .deliverable strong { display: block; margin-bottom: 6px; font-size: 14px; }
+    .deliverable p { margin: 0; color: var(--muted); font-size: 12px; }
+
+    .future-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .future-card { min-height: 240px; }
+
+    .maturity {
+      display: grid;
+      grid-template-columns: 0.85fr 1fr 1.15fr;
+      margin-top: 48px;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .maturity article {
+      padding: 28px;
+      border-right: 1px solid var(--line);
+    }
+
+    .maturity article:last-child { border-right: 0; }
+
+    .maturity h3 {
+      margin-bottom: 12px;
+      font-family: var(--serif);
+      font-size: 21px;
+    }
+
+    .maturity p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .usage-box {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 36px;
+      margin-top: 58px;
+      padding: 34px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 7px;
+    }
+
+    .usage-box h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 500;
+    }
+
+    .usage-copy { display: grid; gap: 12px; }
+
+    .usage-copy code {
+      display: block;
+      padding: 14px 16px;
+      color: #ecf3f7;
+      background: #102f52;
+      border: 1px solid #385d82;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 12px;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      padding: 56px 0 80px;
+      background: #fff;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 0.65fr 1.35fr;
+      gap: 54px;
+      align-items: start;
+    }
+
+    .footer-mark {
+      font-family: var(--serif);
+      font-size: 27px;
+    }
+
+    .footer-mark small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 12px;
+    }
+
+    .sources {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 22px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .sources li {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .back-top {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 80;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #fff;
+      background: var(--blue);
+      border: 0;
+      border-radius: 50%;
+      box-shadow: 0 8px 22px rgba(27, 65, 111, 0.25);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .back-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .back-top:focus-visible,
+    .menu a:focus-visible,
+    .brand:focus-visible {
+      outline: 2px solid var(--red);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 1040px) {
+      :root { --nav-height: 108px; }
+
+      .nav-shell {
+        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding-top: 10px;
+      }
+
+      .brand { padding: 0 20px 8px; }
+      .menu { justify-content: flex-start; padding: 0 12px; border-top: 1px solid var(--line); }
+      .menu a { padding: 15px 9px 14px; }
+
+      .hero-grid { grid-template-columns: 1fr 0.76fr; gap: 40px; }
+      .section-head { grid-template-columns: 130px minmax(0, 1fr); }
+      .flow { grid-template-columns: repeat(3, 1fr); }
+      .phase:nth-child(3)::after { display: none; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .arch-layer { grid-template-columns: 70px 160px 1fr; }
+      .arch-output { grid-column: 3; padding-left: 0; border-left: 0; }
+    }
+
+    @media (max-width: 820px) {
+      .hero { min-height: auto; padding: 64px 0; }
+      .hero-grid,
+      .theory-map,
+      .gate-map,
+      .quality-layout,
+      .evidence-ladder,
+      .usage-box,
+      .footer-grid { grid-template-columns: 1fr; }
+
+      .hero-panel { max-width: 620px; }
+      .metrics-strip { grid-template-columns: repeat(2, 1fr); }
+      .metric:nth-child(2) { border-right: 0; }
+      .metric:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+      .metric:nth-child(3) { padding-left: 0; }
+      .section-head { grid-template-columns: 1fr; gap: 10px; }
+      .principle-grid { grid-template-columns: repeat(2, 1fr); }
+      .contract-row { grid-template-columns: repeat(2, 1fr); }
+      .flow { grid-template-columns: repeat(2, 1fr); }
+      .phase:nth-child(2)::after,
+      .phase:nth-child(4)::after { display: none; }
+      .scenario-switch,
+      .boundary-grid { grid-template-columns: 1fr; }
+      .quality-gates { grid-template-columns: repeat(2, 1fr); }
+      .report-anatomy { grid-template-columns: 1fr; }
+      .anatomy-stage {
+        min-height: auto;
+        padding: 18px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .anatomy-notes { padding: 24px; }
+      .future-grid { grid-template-columns: repeat(2, 1fr); }
+      .maturity { grid-template-columns: 1fr; }
+      .maturity article { border-right: 0; border-bottom: 1px solid var(--line); }
+      .maturity article:last-child { border-bottom: 0; }
+      .sources { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      :root { --nav-height: 102px; }
+      html { scroll-padding-top: 112px; }
+      body { font-size: 15px; }
+      .shell { width: min(100% - 28px, var(--max)); }
+      .brand-mark { width: 30px; height: 30px; font-size: 16px; }
+      .brand-copy strong { font-size: 14px; }
+      .brand-copy small { display: none; }
+      .menu { padding: 0 6px; }
+      .menu a { padding: 14px 8px 13px; font-size: 12px; }
+      .hero { padding: 48px 0 54px; }
+      h1 { font-size: 46px; }
+      .hero-lede { font-size: 17px; }
+      .hero-panel { padding: 24px 20px; }
+      .metrics-strip { margin-top: 42px; }
+      .metric { min-height: 96px; padding: 18px 14px; }
+      .metric strong { font-size: 28px; }
+      .band { padding: 78px 0; }
+      .section-head { margin-bottom: 38px; }
+      .section-title h2 { font-size: 35px; }
+      .section-title p { font-size: 15px; }
+      .definition,
+      .principle-grid,
+      .feature-grid,
+      .flow,
+      .quality-gates,
+      .future-grid,
+      .deliverables,
+      .use-path { grid-template-columns: 1fr; }
+      .definition article { padding: 22px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+      .definition article:last-child { border-bottom: 0; }
+      .positioning-line { padding: 24px 22px; }
+      .theory-core { min-height: 310px; }
+      .theory-layer { grid-template-columns: 1fr; gap: 6px; }
+      .arch-layer { grid-template-columns: 50px 1fr; gap: 10px 14px; padding: 16px; }
+      .arch-layer p,
+      .arch-output { grid-column: 2; }
+      .contract-row { grid-template-columns: 1fr; }
+      .phase { min-height: auto; }
+      .phase::after { display: none; }
+      .gate-list { grid-template-columns: 1fr; }
+      .status { grid-template-columns: 1fr; gap: 3px; }
+      .security-note { grid-template-columns: 1fr; gap: 8px; padding: 24px; }
+      .scenario { padding: 24px 20px; }
+      .scenario-title { align-items: flex-start; flex-direction: column; }
+      .scenario-case { grid-template-columns: 1fr; gap: 5px; }
+      .quality-layout { gap: 34px; }
+      .radar-wrap { padding: 10px; }
+      .radar-caption { flex-direction: column; gap: 4px; }
+      .q-gate { min-height: auto; }
+      .ladder-step { grid-template-columns: 1fr; gap: 2px; }
+      .anatomy-stage { padding: 10px; }
+      .anatomy-canvas { min-height: auto; padding: 18px; }
+      .anatomy-toolbar { flex-direction: column; gap: 5px; }
+      .anatomy-grid { grid-template-columns: 1fr; padding-top: 20px; }
+      .anatomy-main h3 { font-size: 23px; }
+      .anatomy-notes { padding: 22px 20px; }
+      .maturity article { padding: 24px 0; }
+      .usage-box { padding: 25px 20px; gap: 20px; }
+      .footer-grid { gap: 28px; }
+      .back-top { right: 14px; bottom: 14px; width: 38px; height: 38px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 14mm; }
+      .topbar,
+      .back-top,
+      .skip-link { display: none !important; }
+      html { scroll-padding-top: 0; }
+      body { font-size: 10pt; }
+      .hero { min-height: auto; padding: 20mm 0 12mm; }
+      .band { padding: 14mm 0; }
+      .principle-card,
+      .feature-card,
+      .future-card,
+      .phase,
+      .scenario,
+      .report-anatomy,
+      .quality-layout,
+      .evidence-ladder { break-inside: avoid; }
+      .hero-panel,
+      .principle-card,
+      .feature-card,
+      .future-card { box-shadow: none; }
+      .report-anatomy { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+
+  <header class="topbar" aria-label="报告导航">
+    <div class="nav-shell">
+      <a class="brand" href="#overview" aria-label="返回报告顶部">
+        <span class="brand-mark" aria-hidden="true">位</span>
+        <span class="brand-copy">
+          <strong>定位 Skill</strong>
+          <small>SYSTEM DOSSIER</small>
+        </span>
+      </a>
+      <nav class="menu" aria-label="章节菜单">
+        <a href="#overview" aria-current="true">总览</a>
+        <a href="#principles">原理</a>
+        <a href="#architecture">架构</a>
+        <a href="#workflow">流程</a>
+        <a href="#features">特点</a>
+        <a href="#boundary">边界</a>
+        <a href="#scenarios">场景</a>
+        <a href="#quality">质量</a>
+        <a href="#outputs">交付</a>
+        <a href="#evolution">演进</a>
+      </nav>
+    </div>
+    <div class="progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="overview" data-section>
+      <div class="shell">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">Production System · Version 1.3.0</p>
+            <h1>定位 <span>Skill</span></h1>
+            <p class="hero-lede">把个人、产品、服务与公司品牌的定位问题，转化为一套可追溯、可比较、可验证的战略判断。</p>
+            <ul class="hero-tags" aria-label="能力标签">
+              <li>心智定位</li>
+              <li>竞品研究</li>
+              <li>需求洞察</li>
+              <li>差异化诊断</li>
+              <li>证据治理</li>
+              <li>可视化报告</li>
+            </ul>
+          </div>
+
+          <aside class="hero-panel" aria-label="系统要回答的问题">
+            <p class="mini-label">DECISION QUESTIONS</p>
+            <h2>最终回答五个问题</h2>
+            <ol class="answer-list">
+              <li>目标用户会用哪一句话理解你？</li>
+              <li>他们当前把谁当作替代方案？</li>
+              <li>哪项差异与用户选择真正相关？</li>
+              <li>哪项优势已有证据，并能长期守住？</li>
+              <li>下一步怎样验证、表达并持续占位？</li>
+            </ol>
+          </aside>
+        </div>
+
+        <div class="metrics-strip" aria-label="系统关键指标">
+          <div class="metric"><strong>93</strong><span>五维系统审计总分 / 100</span></div>
+          <div class="metric"><strong>41</strong><span>自动化测试用例</span></div>
+          <div class="metric"><strong>26</strong><span>每份报告质量检查项</span></div>
+          <div class="metric"><strong>3</strong><span>本地、标准、深度研究模式</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="definition-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">00 / DEFINITION</div>
+          <div class="section-title">
+            <h2 id="definition-title">一句话理解这套系统</h2>
+            <p>定位 Skill 是一个以竞争参照和证据为约束的战略诊断系统。它先确认信息是否足够，再研究用户与竞争，随后形成定位选项、推荐结论和验证计划。</p>
+          </div>
+        </div>
+
+        <div class="definition">
+          <article>
+            <span class="label">INPUT</span>
+            <h3>接收多种材料</h3>
+            <p>引导问答、公司介绍、附件、官网链接、竞品名单、访谈纪要与已有研究可混合输入。</p>
+          </article>
+          <article>
+            <span class="label">SYSTEM</span>
+            <h3>执行受控判断</h3>
+            <p>通过信息门槛、可信度分级、竞品比较、D6 优势诊断和方案压力测试控制结论质量。</p>
+          </article>
+          <article>
+            <span class="label">OUTPUT</span>
+            <h3>交付可行动结论</h3>
+            <p>输出一句话定位、差异化解释、证据账本、风险边界、行动优先级与市场验证路线。</p>
+          </article>
+        </div>
+
+        <div class="positioning-line">
+          <small>POSITIONING FORMULA</small>
+          <p>为【最佳目标用户】，在【关键场景】下，提供【品类】，通过【独特机制】实现【核心价值】；相较于【主要替代方案】，关键差异是【可证明优势】。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="principles" data-section aria-labelledby="principles-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">01 / PRINCIPLES</div>
+          <div class="section-title">
+            <h2 id="principles-title">原理与理论体系</h2>
+            <p>系统以《定位》的心智竞争观为主轴，引入现代定位方法、课程营销结构和证据治理，形成一条从市场事实到战略建议的判断链。</p>
+          </div>
+        </div>
+
+        <div class="principle-grid">
+          <article class="principle-card">
+            <span class="card-index">P01 / MIND</span>
+            <h3>心智先行</h3>
+            <p>定位的判断对象是目标用户如何理解与记住主体。企业自我描述只能作为输入，市场认知决定真实起点。</p>
+          </article>
+          <article class="principle-card">
+            <span class="card-index">P02 / CATEGORY</span>
+            <h3>品类与阶梯</h3>
+            <p>先识别用户使用的品类语言，再判断主体位于哪一级心智阶梯，以及新的空位是否存在。</p>
+          </article>
+          <article class="principle-card">
+            <span class="card-index">P03 / COMPETITION</span>
+            <h3>竞争参照</h3>
+            <p>差异化必须绑定替代方案。竞品集合覆盖直接、间接、现状、不行动和标杆五种参照。</p>
+          </article>
+          <article class="principle-card">
+            <span class="card-index">P04 / FOCUS</span>
+            <h3>聚焦一个位置</h3>
+            <p>系统压缩受众、场景、品类和价值表达，让一句话能够进入心智，并约束产品与传播的一致性。</p>
+          </article>
+          <article class="principle-card">
+            <span class="card-index">P05 / EVIDENCE</span>
+            <h3>证据约束</h3>
+            <p>事实、自述、推断、假设和建议分层记录。关键主张同时接受权威性、直接性、时效性与独立性检查。</p>
+          </article>
+          <article class="principle-card">
+            <span class="card-index">P06 / CONSISTENCY</span>
+            <h3>长期一致</h3>
+            <p>定位会进入产品、销售、内容和组织决策。持续使用同一套品类与价值语言，才能形成认知积累。</p>
+          </article>
+        </div>
+
+        <div class="theory-map" aria-label="理论体系组合">
+          <div class="theory-core">
+            <div>
+              <span class="mini-label" style="color:#cbd8e4">THEORY CORE</span>
+              <strong>心智中的相对位置</strong>
+              <p>围绕用户、场景、品类、竞争和证据，寻找一个清晰、相关、可信、可守的认知位置。</p>
+            </div>
+          </div>
+          <div class="theory-layers">
+            <div class="theory-layer"><b>《定位》</b><span>心智、品类、阶梯、聚焦、重新定位、品牌延伸风险</span></div>
+            <div class="theory-layer"><b>现代定位</b><span>竞争替代、独特属性、价值映射、最佳匹配用户、市场类别</span></div>
+            <div class="theory-layer"><b>课程营销</b><span>人群、痛点、结果、机制四层表达，连接价值与购买理由</span></div>
+            <div class="theory-layer"><b>证据认识论</b><span>事实分级、来源可信度、推断边界、可证伪假设、验证计划</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="architecture" data-section aria-labelledby="architecture-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">02 / ARCHITECTURE</div>
+          <div class="section-title">
+            <h2 id="architecture-title">六层系统架构</h2>
+            <p>架构把触发、输入、研究、判断、验证和呈现分离。JSON 数据合同贯穿各层，HTML 与 Markdown 从同一份结构化数据生成。</p>
+          </div>
+        </div>
+
+        <div class="architecture" role="list" aria-label="系统架构层级">
+          <article class="arch-layer" role="listitem">
+            <span class="arch-no">L01</span><h3>触发与路由层</h3><p>显式 Skill 调用、自然语言意图识别、范围判断</p><span class="arch-output">输出：任务类型与研究模式</span>
+          </article>
+          <article class="arch-layer" role="listitem">
+            <span class="arch-no">L02</span><h3>输入与门槛层</h3><p>问答、附件、网址、混合材料；最少必要信息校验</p><span class="arch-output">输出：intake-brief.json</span>
+          </article>
+          <article class="arch-layer" role="listitem">
+            <span class="arch-no">L03</span><h3>研究与证据层</h3><p>市场、用户、竞品、品类与来源可信度管理</p><span class="arch-output">输出：研究账本与证据卡</span>
+          </article>
+          <article class="arch-layer" role="listitem">
+            <span class="arch-no">L04</span><h3>诊断与决策层</h3><p>需求分析、D6 优势诊断、定位选项、压力测试</p><span class="arch-output">输出：推荐结论与风险</span>
+          </article>
+          <article class="arch-layer" role="listitem">
+            <span class="arch-no">L05</span><h3>合同与验证层</h3><p>Schema、数据校验、证据引用、内容一致性检查</p><span class="arch-output">输出：可信报告数据</span>
+          </article>
+          <article class="arch-layer" role="listitem">
+            <span class="arch-no">L06</span><h3>呈现与治理层</h3><p>离线 HTML、Markdown、视觉 QA、安全与分发</p><span class="arch-output">输出：可交付报告包</span>
+          </article>
+        </div>
+
+        <div class="contract-row" aria-label="核心架构约束">
+          <div class="contract-item"><strong>单一数据源</strong><span>报告内容先进入结构化 JSON，再渲染不同格式。</span></div>
+          <div class="contract-item"><strong>逻辑与视图分离</strong><span>研究判断、指标计算和页面模板拥有清晰责任边界。</span></div>
+          <div class="contract-item"><strong>可降级交付</strong><span>图表或渲染受限时保留文字结论、数据表和审计线索。</span></div>
+          <div class="contract-item"><strong>跨平台适配</strong><span>提供 OpenAI、Claude、通用 Agent Skills 与 VS Code 适配。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="workflow" data-section aria-labelledby="workflow-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">03 / WORKFLOW</div>
+          <div class="section-title">
+            <h2 id="workflow-title">AI 运行流程</h2>
+            <p>完整流程包含 14 个步骤，并归并为五个决策阶段。每个阶段都有明确输入、产物和继续执行条件。</p>
+          </div>
+        </div>
+
+        <div class="flow" aria-label="五阶段工作流">
+          <article class="phase">
+            <span class="phase-no">PHASE 01</span>
+            <h3>识别任务</h3>
+            <ol><li>识别定位对象</li><li>明确决策目的</li><li>选择研究深度</li></ol>
+          </article>
+          <article class="phase">
+            <span class="phase-no">PHASE 02</span>
+            <h3>建立输入</h3>
+            <ol><li>整理问答与材料</li><li>标准化输入 brief</li><li>通过准备度门槛</li></ol>
+          </article>
+          <article class="phase">
+            <span class="phase-no">PHASE 03</span>
+            <h3>研究市场</h3>
+            <ol><li>验证主体事实</li><li>建立竞品集合</li><li>识别需求与品类</li></ol>
+          </article>
+          <article class="phase">
+            <span class="phase-no">PHASE 04</span>
+            <h3>形成判断</h3>
+            <ol><li>诊断 D6 优势</li><li>生成 2 至 3 个选项</li><li>压力测试并推荐</li></ol>
+          </article>
+          <article class="phase">
+            <span class="phase-no">PHASE 05</span>
+            <h3>交付验证</h3>
+            <ol><li>生成报告数据</li><li>渲染 HTML 与 Markdown</li><li>执行 26 项 QA</li></ol>
+          </article>
+        </div>
+
+        <div class="gate-map">
+          <div class="gate-box">
+            <p class="mini-label">READINESS GATE</p>
+            <h3>六项最少必要信息</h3>
+            <ul class="gate-list">
+              <li>可识别的定位对象</li>
+              <li>明确的决策目标</li>
+              <li>可描述的产品或服务</li>
+              <li>市场、地区与语言边界</li>
+              <li>目标用户初步假设</li>
+              <li>至少一个可核验来源</li>
+            </ul>
+          </div>
+          <div class="status-stack" aria-label="门槛输出状态">
+            <div class="status execute"><strong><span>可以执行</span><code>execute</code></strong><span>信息与证据满足要求，可形成定位建议。</span></div>
+            <div class="status validate"><strong><span>先做验证</span><code>validate_first</code></strong><span>可先研究，推荐结论等待关键证据。</span></div>
+            <div class="status insufficient"><strong><span>证据不足</span><code>insufficient_evidence</code></strong><span>暂停诊断，继续补充最少必要信息。</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="features" data-section aria-labelledby="features-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">04 / FEATURES</div>
+          <div class="section-title">
+            <h2 id="features-title">系统特点</h2>
+            <p>这些特点共同解决三个核心风险：材料不完整、差异缺少竞争参照、建议缺乏证据和验证路径。</p>
+          </div>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card"><span class="symbol">01</span><h3>多模态输入</h3><p>支持逐题问答、附件、官网、具体网址和混合材料；输入统一转换为标准 brief。</p></article>
+          <article class="feature-card"><span class="symbol">02</span><h3>准备度优先</h3><p>信息通过最少必要门槛后进入正式研究，减少早期臆测带来的错误方向。</p></article>
+          <article class="feature-card"><span class="symbol">03</span><h3>竞品驱动</h3><p>先建立替代方案全集，再比较差异强度、用户相关性和证据强度。</p></article>
+          <article class="feature-card"><span class="symbol">04</span><h3>D6 优势诊断</h3><p>从相关、稀缺、证据、防守、战略和表达六个角度评估优势质量。</p></article>
+          <article class="feature-card"><span class="symbol">05</span><h3>证据感知</h3><p>每条重要主张带来源、时间、市场适配、可信度和事实类型标签。</p></article>
+          <article class="feature-card"><span class="symbol">06</span><h3>多方案比较</h3><p>形成 2 至 3 个战略选项，用统一维度比较收益、风险和验证成本。</p></article>
+          <article class="feature-card"><span class="symbol">07</span><h3>通俗表达</h3><p>详细分析前先给出当前理解、竞品理解、差异标签和一句话推荐。</p></article>
+          <article class="feature-card"><span class="symbol">08</span><h3>可审计交付</h3><p>HTML、JSON 与 Markdown 保持同源，报告结论可回查到证据账本。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="boundary" data-section aria-labelledby="boundary-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">05 / BOUNDARY</div>
+          <div class="section-title">
+            <h2 id="boundary-title">能力边界</h2>
+            <p>边界用于保护结论可信度，也帮助团队把定位判断、专项研究、传播创意和经营决策分配给合适的角色。</p>
+          </div>
+        </div>
+
+        <div class="boundary-grid">
+          <article class="boundary-panel">
+            <h3>适用范围</h3>
+            <ul class="clean-list">
+              <li>个人、产品、服务与公司品牌定位</li>
+              <li>竞品与替代方案研究</li>
+              <li>用户需求和差异化诊断</li>
+              <li>定位选项比较与推荐</li>
+              <li>定位验证与行动路线</li>
+            </ul>
+          </article>
+          <article class="boundary-panel">
+            <h3>外部协同</h3>
+            <ul class="clean-list">
+              <li>完整市场规模测算与投资模型</li>
+              <li>法律、财务、医疗等专业结论</li>
+              <li>单独的广告语与创意生产</li>
+              <li>品牌知识库的长期运营</li>
+              <li>投放、销售和渠道的执行管理</li>
+            </ul>
+          </article>
+          <article class="boundary-panel">
+            <h3>人类决策保留</h3>
+            <ul class="clean-list">
+              <li>战略野心与资源承诺</li>
+              <li>价值观、伦理与声誉取舍</li>
+              <li>组织能力建设优先级</li>
+              <li>预算与时间窗口选择</li>
+              <li>管理层最终共识与责任归属</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="security-note">
+          <strong>安全与隐私边界</strong>
+          <p>系统不需要密钥即可生成离线报告；远程脚本默认关闭；输入路径执行清理；HTML 内容执行转义；研究材料按必要范围使用。涉及机密材料时，应继续采用本地研究模式，并由用户确认可引用范围。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="scenarios" data-section aria-labelledby="scenarios-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">06 / SCENARIOS</div>
+          <div class="section-title">
+            <h2 id="scenarios-title">个人与公司使用场景</h2>
+            <p>同一套判断框架可以服务个人和组织。两类场景共享心智、竞争、聚焦与证据原则，研究对象和行动约束各有侧重。</p>
+          </div>
+        </div>
+
+        <div class="scenario-switch">
+          <article class="scenario personal">
+            <div class="scenario-title"><h3>对个人</h3><span>PERSONAL POSITIONING</span></div>
+            <div class="scenario-case"><strong>专家与顾问</strong><p>确定服务对象、专业品类、关键问题、独特方法和可信证明。</p></div>
+            <div class="scenario-case"><strong>内容创作者</strong><p>连接身份标签、受众认知、内容母题与商业化路径。</p></div>
+            <div class="scenario-case"><strong>职业转型者</strong><p>识别可迁移优势、目标岗位参照和进入新心智阶梯的策略。</p></div>
+            <div class="scenario-case"><strong>课程主理人</strong><p>提炼目标人群、关键痛点、结果承诺、独特机制和证据。</p></div>
+          </article>
+
+          <article class="scenario company">
+            <div class="scenario-title"><h3>对公司</h3><span>CORPORATE POSITIONING</span></div>
+            <div class="scenario-case"><strong>公司品牌</strong><p>统一公司是谁、服务谁、解决什么、凭什么相信与如何长期占位。</p></div>
+            <div class="scenario-case"><strong>产品与服务</strong><p>明确最佳匹配客户、竞争替代、价值差异和销售表达。</p></div>
+            <div class="scenario-case"><strong>新品类进入</strong><p>评估新类别名称、教育成本、心智空位和资源匹配。</p></div>
+            <div class="scenario-case"><strong>重新定位</strong><p>识别旧认知、目标认知、竞争反应和迁移路径。</p></div>
+          </article>
+        </div>
+
+        <div class="use-path" aria-label="典型使用路径">
+          <div class="use-step"><strong>01 / 诊断</strong><span>当前市场如何理解主体</span></div>
+          <div class="use-step"><strong>02 / 选择</strong><span>比较不同定位方向</span></div>
+          <div class="use-step"><strong>03 / 对齐</strong><span>统一产品、销售与内容语言</span></div>
+          <div class="use-step"><strong>04 / 验证</strong><span>用市场反馈更新判断</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="quality" data-section aria-labelledby="quality-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">07 / QUALITY</div>
+          <div class="section-title">
+            <h2 id="quality-title">质量控制体系</h2>
+            <p>质量控制覆盖输入、研究、推荐、数据、视觉、安全与分发。五维审计分数来自 2026 年 7 月 12 日的实际评测。</p>
+          </div>
+        </div>
+
+        <div class="quality-layout">
+          <figure class="radar-wrap" aria-labelledby="radar-title radar-desc">
+            <svg viewBox="0 0 420 360" role="img">
+              <title id="radar-title">定位 Skill 五维审计雷达图</title>
+              <desc id="radar-desc">架构 93，原理 96，流程 92，触发 92，质量 94。</desc>
+              <g fill="none" stroke="#dce1e3" stroke-width="1">
+                <polygon points="180,55 279.9,127.6 241.7,245 118.3,245 80.1,127.6" fill="#f8f9f8"/>
+                <polygon points="180,76 259.9,134 229.4,228 130.6,228 100.1,134"/>
+                <polygon points="180,97 239.9,140.5 217,211 143,211 120.1,140.5"/>
+                <polygon points="180,118 219.9,147 204.7,194 155.3,194 140.1,147"/>
+                <polygon points="180,139 199.9,153.5 192.3,177 167.7,177 160.1,153.5"/>
+                <line x1="180" y1="160" x2="180" y2="55"/>
+                <line x1="180" y1="160" x2="279.9" y2="127.6"/>
+                <line x1="180" y1="160" x2="241.7" y2="245"/>
+                <line x1="180" y1="160" x2="118.3" y2="245"/>
+                <line x1="180" y1="160" x2="80.1" y2="127.6"/>
+              </g>
+              <polygon points="180,62.4 275.9,128.9 236.8,238.2 123.2,238.2 86.1,129.5" fill="rgba(27,65,111,0.18)" stroke="#1b416f" stroke-width="3"/>
+              <g fill="#bd493a" stroke="#fff" stroke-width="2">
+                <circle cx="180" cy="62.4" r="5"/>
+                <circle cx="275.9" cy="128.9" r="5"/>
+                <circle cx="236.8" cy="238.2" r="5"/>
+                <circle cx="123.2" cy="238.2" r="5"/>
+                <circle cx="86.1" cy="129.5" r="5"/>
+              </g>
+              <g fill="#172233" font-family="PingFang SC, sans-serif" font-size="14" text-anchor="middle">
+                <text x="180" y="28">架构 93</text>
+                <text x="330" y="124">原理 96</text>
+                <text x="278" y="288">流程 92</text>
+                <text x="82" y="288">触发 92</text>
+                <text x="32" y="124">质量 94</text>
+              </g>
+            </svg>
+            <figcaption class="radar-caption"><span>五个维度，满分 100</span><strong>综合得分 93</strong></figcaption>
+          </figure>
+
+          <div class="quality-copy">
+            <p class="mini-label">AUDIT SNAPSHOT</p>
+            <h3>体系完整，关键提升点集中在真实运行数据</h3>
+            <p>理论、证据治理与交付链路已经形成生产级闭环。下一阶段应增加真实用户盲测、研究中断恢复和长期运行遥测。</p>
+            <div class="score-bars" aria-label="五维得分">
+              <div class="score-row"><span>架构</span><div class="bar"><span style="width:93%"></span></div><strong>93</strong></div>
+              <div class="score-row"><span>原理</span><div class="bar"><span style="width:96%"></span></div><strong>96</strong></div>
+              <div class="score-row"><span>流程</span><div class="bar"><span style="width:92%"></span></div><strong>92</strong></div>
+              <div class="score-row"><span>触发</span><div class="bar"><span style="width:92%"></span></div><strong>92</strong></div>
+              <div class="score-row"><span>质量</span><div class="bar"><span style="width:94%"></span></div><strong>94</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quality-gates">
+          <article class="q-gate"><strong>输入门槛</strong><p>六项最少信息、字段校验、URL 与附件可用性、市场边界。</p></article>
+          <article class="q-gate"><strong>研究门槛</strong><p>来源权威、主张适配、直接性、时效、独立性与市场适配。</p></article>
+          <article class="q-gate"><strong>推荐门槛</strong><p>用户相关、竞争稀缺、证据充分、可防守、战略匹配与表达聚焦。</p></article>
+          <article class="q-gate"><strong>数据门槛</strong><p>Schema 校验、证据引用、图表数据完整、跨格式一致。</p></article>
+          <article class="q-gate"><strong>视觉门槛</strong><p>桌面与手机截图、12 张图表检查、三张五维雷达、打印验收。</p></article>
+          <article class="q-gate"><strong>安全门槛</strong><p>离线依赖、HTML 转义、路径清理、权限与分发包检查。</p></article>
+        </div>
+
+        <div class="evidence-ladder">
+          <div class="ladder" aria-label="来源可信度阶梯">
+            <div class="ladder-step"><b>一级来源</b><span>政府、监管、标准、公司官方原始材料</span></div>
+            <div class="ladder-step"><b>独立证据</b><span>权威研究、数据库、主流行业机构</span></div>
+            <div class="ladder-step"><b>市场信号</b><span>用户访谈、交易数据、搜索与渠道反馈</span></div>
+            <div class="ladder-step"><b>探索线索</b><span>媒体转述、社区观点、待验证观察</span></div>
+          </div>
+          <div class="evidence-copy">
+            <p class="mini-label" style="color:#34745b">CLAIM CONTROL</p>
+            <h3>可信来源还需匹配具体主张</h3>
+            <p>来源等级只解决一部分问题。系统会继续检查这条材料是否直接支持当前结论、是否属于目标市场、是否足够新，以及是否存在独立交叉验证。</p>
+            <ul>
+              <li>关键事实至少对应一个直接来源。</li>
+              <li>高风险建议需要独立或一手证据支持。</li>
+              <li>推断和假设必须显式标记，并进入验证计划。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="outputs" data-section aria-labelledby="outputs-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">08 / OUTPUTS</div>
+          <div class="section-title">
+            <h2 id="outputs-title">交付形态与报告体验</h2>
+            <p>报告采用纯白画布、顶部固定菜单和响应式图表。用户先读取结论，再按需进入竞争、需求、证据与验证细节。</p>
+          </div>
+        </div>
+
+        <div class="report-anatomy" aria-label="定位报告通用结构示意">
+          <div class="anatomy-stage">
+            <div class="anatomy-canvas">
+              <div class="anatomy-toolbar"><strong>定位研究报告</strong><span>结论　竞争　优势　验证</span></div>
+              <div class="anatomy-grid">
+                <div class="anatomy-main">
+                  <p class="mini-label">01 / POSITION</p>
+                  <h3>为最佳目标用户，占据一个清晰、相关、可信且可守的心智位置</h3>
+                  <p>一句话结论同时说明目标用户、关键场景、品类、核心价值、竞争参照与可证明差异。</p>
+                  <div class="anatomy-metrics">
+                    <span><b>5 类</b>竞争参照</span>
+                    <span><b>D6</b>优势诊断</span>
+                    <span><b>3 种</b>研究模式</span>
+                  </div>
+                </div>
+                <aside class="anatomy-side">
+                  <strong>建议先验证</strong>
+                  <p>推荐理由连接用户需求、竞争空位与能力证据。</p>
+                  <strong>反证条件</strong>
+                  <p>记录会推翻当前结论的市场信号和停止条件。</p>
+                  <strong>下一步</strong>
+                  <p>把定位转化为访谈、页面、销售话术和内容测试。</p>
+                </aside>
+              </div>
+            </div>
+          </div>
+          <div class="anatomy-notes">
+            <p class="mini-label">REPORT EXPERIENCE</p>
+            <h3>结论先行，证据与验证随后展开</h3>
+            <p>顶部菜单持续跟随，用户可以在竞争、需求、优势、方案、证据和验证章节之间快速跳转。</p>
+            <ul>
+              <li>纯白画布与响应式布局</li>
+              <li>五维雷达和证据治理图表</li>
+              <li>离线运行与 A4 打印样式</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="deliverables">
+          <article class="deliverable"><strong>HTML 可视化报告</strong><p>离线打开、顶部固定导航、响应式图表、打印样式与证据索引。</p></article>
+          <article class="deliverable"><strong>JSON 数据合同</strong><p>保存判断、指标、证据与引用关系，支持复用、校验和再次渲染。</p></article>
+          <article class="deliverable"><strong>Markdown 审计版本</strong><p>提供纯文本降级、版本比较、团队评审和长期归档。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="evolution" data-section aria-labelledby="evolution-title">
+      <div class="shell">
+        <div class="section-head">
+          <div class="section-index">09 / EVOLUTION</div>
+          <div class="section-title">
+            <h2 id="evolution-title">进一步价值与演进方向</h2>
+            <p>当定位报告进入真实经营流程，它会逐步形成战略共识、证据记忆和市场学习机制。以下能力值得在后续版本继续强化。</p>
+          </div>
+        </div>
+
+        <div class="future-grid">
+          <article class="future-card"><span class="card-index">F01 / ALIGNMENT</span><h3>决策共识层</h3><p>把管理层分歧显式化，记录各选项的假设、代价、责任人与否决条件，提升战略对齐效率。</p></article>
+          <article class="future-card"><span class="card-index">F02 / FALSIFICATION</span><h3>反证机制</h3><p>主动寻找会推翻推荐定位的证据，为每个核心假设设置失败信号和停止条件。</p></article>
+          <article class="future-card"><span class="card-index">F03 / PORTFOLIO</span><h3>品牌组合护栏</h3><p>分析公司品牌、产品品牌和个人 IP 的关系，控制品牌延伸造成的认知稀释。</p></article>
+          <article class="future-card"><span class="card-index">F04 / EXPERIMENT</span><h3>定位实验系统</h3><p>把一句话定位转化为访谈、落地页、销售话术和内容测试，用市场数据逐步校准。</p></article>
+          <article class="future-card"><span class="card-index">F05 / MEMORY</span><h3>组织证据记忆</h3><p>保存历史结论、版本变化、被否决选项和新证据，避免团队重复研究同一问题。</p></article>
+          <article class="future-card"><span class="card-index">F06 / CADENCE</span><h3>定位运营节奏</h3><p>建立季度复盘、竞争信号监测与年度重评，让定位随市场事实更新，同时保持核心一致。</p></article>
+        </div>
+
+        <div class="maturity" aria-label="当前能力与演进重点">
+          <article><p class="mini-label">NOW</p><h3>当前成熟能力</h3><p>理论、门槛、竞品研究、证据治理、结构化数据、报告渲染和基础 QA 已形成闭环。</p></article>
+          <article><p class="mini-label">WATCHLIST</p><h3>维护关注点</h3><p>核心报告模型与模板文件体量较大，需要持续拆分责任边界，并保持版本一致性。</p></article>
+          <article><p class="mini-label">NEXT</p><h3>优先演进方向</h3><p>增加真实用户盲测、运行遥测、研究状态持久化、任务中断恢复和更多生产样本。</p></article>
+        </div>
+
+        <div class="usage-box">
+          <h3>怎样触发这套 Skill</h3>
+          <div class="usage-copy">
+            <code>$yao-positioning-skill 为一家进入中国大陆市场的 GEO 服务公司做品牌定位诊断。资料包括公司介绍、官网和竞品名单。</code>
+            <code>请分析我的个人专家定位。我可以逐题回答，也会上传履历、案例和内容账号链接；信息满足门槛后再开始竞品研究。</code>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-grid">
+      <div class="footer-mark">定位 Skill 系统说明
+        <small>报告日期：2026-07-16 · 依据版本：1.3.0</small>
+      </div>
+      <div>
+        <p class="mini-label">AUDIT SOURCES</p>
+        <ul class="sources">
+          <li>SKILL.md</li>
+          <li>manifest.json</li>
+          <li>references/theory-system.md</li>
+          <li>references/ai-workflow.md</li>
+          <li>references/intake-and-readiness-gate.md</li>
+          <li>references/source-credibility-policy.md</li>
+          <li>references/competitor-research-method.md</li>
+          <li>references/report-contract.md</li>
+          <li>references/html-report-spec.md</li>
+          <li>reports/five-dimension-audit-2026-07-12.md</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-top" type="button" aria-label="返回顶部" title="返回顶部">↑</button>
+
+  <script>
+    (() => {
+      const links = [...document.querySelectorAll('.menu a')];
+      const sections = [...document.querySelectorAll('[data-section]')];
+      const progress = document.querySelector('.progress');
+      const backTop = document.querySelector('.back-top');
+
+      const setActive = (id) => {
+        links.forEach((link) => {
+          const active = link.getAttribute('href') === `#${id}`;
+          if (active) {
+            link.setAttribute('aria-current', 'true');
+            const menu = link.closest('.menu');
+            if (menu.scrollWidth > menu.clientWidth) {
+              const target = link.offsetLeft - (menu.clientWidth - link.offsetWidth) / 2;
+              menu.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+            }
+          } else {
+            link.removeAttribute('aria-current');
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActive(visible.target.id);
+      }, { rootMargin: '-24% 0px -64% 0px', threshold: [0, 0.08, 0.2] });
+
+      sections.forEach((section) => observer.observe(section));
+
+      const updateScrollUI = () => {
+        const range = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = range > 0 ? window.scrollY / range : 0;
+        progress.style.transform = `scaleX(${Math.min(1, Math.max(0, ratio))})`;
+        backTop.classList.toggle('visible', window.scrollY > 640);
+      };
+
+      window.addEventListener('scroll', updateScrollUI, { passive: true });
+      window.addEventListener('resize', updateScrollUI);
+      updateScrollUI();
+
+      backTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
+</body>
+</html>

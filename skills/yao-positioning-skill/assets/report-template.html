@@ -1,0 +1,2141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{{REPORT_TITLE}}</title>
+  <style>
+    :root {
+      --canvas: #ffffff;
+      --parchment: #ffffff;
+      --surface: #ffffff;
+      --surface-raised: #ffffff;
+      --ink: #172333;
+      --ink-soft: #465362;
+      --muted: #6f7883;
+      --line: #e6e9ed;
+      --line-strong: #cfd5dc;
+      --accent: #183a66;
+      --accent-soft: #eef3f8;
+      --positive: #356b56;
+      --positive-soft: #edf5f0;
+      --caution: #8b671f;
+      --caution-soft: #faf4e7;
+      --risk: #994737;
+      --risk-soft: #faefec;
+      --olive: #626b59;
+      --unknown: #9aa1a9;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --shadow-raised: 0 1px 2px rgba(23, 35, 51, 0.07), 0 10px 28px rgba(23, 35, 51, 0.045);
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+      --space-7: 48px;
+      --space-8: 64px;
+      --content: 1240px;
+      --serif: "TsangerJinKai02", "Songti SC", "STSong", "Noto Serif SC", serif;
+      --sans: -apple-system, "SF Pro Text", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      --mono: "SFMono-Regular", "Cascadia Mono", "JetBrains Mono", "Noto Sans Mono CJK SC", monospace;
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--canvas);
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 116px;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--parchment);
+      color: var(--ink);
+      line-height: 1.68;
+      letter-spacing: 0.1px;
+      touch-action: manipulation;
+    }
+
+    a { color: var(--accent); }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid rgba(27, 54, 93, 0.28);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 10px;
+      left: 10px;
+      transform: translateY(-150%);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: white;
+      background: var(--ink);
+      transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .topbar {
+      position: sticky;
+      z-index: 40;
+      top: 0;
+      width: 100%;
+      border-bottom: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.97);
+      transition: box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .topbar[data-compact="true"] {
+      background: rgba(255, 255, 255, 0.99);
+      box-shadow: 0 8px 24px rgba(23, 35, 51, 0.075);
+    }
+
+    .topbar-primary,
+    .topbar-nav-row {
+      width: min(calc(100% - 48px), var(--content));
+      margin: 0 auto;
+    }
+
+    .topbar-primary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 62px;
+      gap: 24px;
+      transition: min-height 180ms ease;
+    }
+
+    .topbar[data-compact="true"] .topbar-primary { min-height: 48px; }
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .brand-seal {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      color: var(--accent);
+      font-family: var(--serif);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .brand-copy {
+      display: grid;
+      line-height: 1.2;
+    }
+
+    .brand-copy strong {
+      font-family: var(--serif);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .brand-copy span {
+      margin-top: 3px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+    .topbar-status {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .topbar-nav-row {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      border-top: 1px solid var(--line);
+    }
+
+    .report-shell {
+      display: block;
+      min-height: 100vh;
+    }
+
+    .report-nav {
+      display: flex;
+      width: 100%;
+      gap: 0;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+
+    .report-nav::-webkit-scrollbar { display: none; }
+
+    .report-nav a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 43px;
+      flex: 0 0 auto;
+      padding: 0 15px;
+      color: var(--ink-soft);
+      font-size: 12px;
+      text-decoration: none;
+      transition-property: color, background-color, transform;
+      transition-duration: 140ms;
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .report-nav a::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      right: 15px;
+      bottom: -1px;
+      height: 2px;
+      background: transparent;
+    }
+
+    .report-nav a[aria-current="true"] {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .report-nav a[aria-current="true"]::before { background: var(--accent); }
+
+    .tool-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      gap: 6px;
+      padding: 7px 11px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      color: var(--ink);
+      background: var(--surface);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition-property: transform, box-shadow, border-color;
+      transition-duration: 140ms;
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tool-button:active { transform: scale(0.96); }
+
+    .main {
+      width: min(100%, calc(var(--content) + 96px));
+      margin: 0 auto;
+      padding: 54px 48px 96px;
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.34fr);
+      gap: 48px;
+      align-items: end;
+      padding: 0 0 34px;
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .masthead-main {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .subject-monogram {
+      display: grid;
+      place-items: center;
+      width: 92px;
+      aspect-ratio: 1;
+      border: 1px solid var(--line-strong);
+      color: var(--accent);
+      background: var(--surface);
+      font-family: var(--serif);
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .masthead-copy { min-width: 0; }
+
+    .report-descriptor {
+      margin: 8px 0 0;
+      color: var(--ink-soft);
+      font-family: var(--serif);
+      font-size: 20px;
+      line-height: 1.4;
+    }
+
+    .eyebrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 10px;
+      color: var(--olive);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+    }
+
+    .eyebrow-separator { color: var(--line-strong); }
+
+    h1,
+    h2 {
+      font-family: var(--serif);
+      font-weight: 500;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 24ch;
+      font-size: 50px;
+      line-height: 1.22;
+      color: var(--ink);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.3;
+    }
+
+    h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.42;
+      text-wrap: balance;
+    }
+
+    p { text-wrap: pretty; }
+
+    .masthead-meta {
+      min-width: 198px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .masthead-meta::before {
+      content: "RESEARCH DOSSIER";
+      display: block;
+      margin-bottom: 12px;
+      color: var(--olive);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+
+    .status-badge,
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 28px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      color: var(--ink-soft);
+      background: var(--accent-soft);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-badge[data-status="execute"],
+    .tag.positive { color: #315746; background: var(--positive-soft); }
+
+    .status-badge[data-status="validate_first"],
+    .tag.caution { color: #74531c; background: var(--caution-soft); }
+
+    .status-badge[data-status="insufficient_evidence"],
+    .tag.risk { color: #7f392c; background: var(--risk-soft); }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      margin: 0 0 18px;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+      background: transparent;
+    }
+
+    .credibility-strip {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .metric-item {
+      min-width: 0;
+      padding: 18px 14px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric-item:last-child { border-right: 0; }
+
+    .metric-label {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0;
+      line-height: 1.35;
+    }
+
+    .metric-value {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .section {
+      padding: 76px 0 0;
+      scroll-margin-top: 112px;
+    }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 0.72fr);
+      gap: 32px;
+      align-items: start;
+      margin-bottom: 28px;
+    }
+
+    .section-kicker {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+    }
+
+    .section-summary {
+      margin: 4px 0 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.78;
+    }
+
+    .mindshift-band {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) 48px minmax(0, 1.15fr);
+      gap: 24px;
+      align-items: center;
+      padding: 26px 0;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .mindshift-label { margin: 0 0 7px; color: var(--muted); font-size: 11px; font-weight: 700; }
+
+    .mindshift-word {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 34px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .mindshift-copy { margin: 0; color: var(--ink-soft); font-size: 14px; line-height: 1.7; }
+    .mindshift-arrow { color: var(--caution); font-family: var(--serif); font-size: 32px; text-align: center; }
+
+    .plain-positioning {
+      padding: 34px 0 28px;
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .conclusion-statement {
+      margin: 0 0 18px;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.42;
+      text-wrap: balance;
+    }
+
+    .positioning-formula {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px 24px;
+      margin: 0;
+    }
+
+    .contrast-sentence { margin: 18px 0 0; color: var(--accent); font-size: 16px; font-weight: 700; }
+
+    .competitor-shorthand { padding: 28px 0; border-bottom: 1px solid var(--line-strong); }
+    .competitor-shorthand h3 { margin-bottom: 14px; }
+    .competitor-shorthand-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .competitor-short-item { min-width: 0; padding: 0 22px; border-right: 1px solid var(--line); }
+    .competitor-short-item:first-child { padding-left: 0; }
+    .competitor-short-item:last-child { padding-right: 0; border-right: 0; }
+    .competitor-short-name { display: block; margin-bottom: 6px; color: var(--muted); font-size: 11px; }
+    .competitor-short-word { display: block; margin-bottom: 5px; color: var(--ink); font-family: var(--serif); font-size: 21px; line-height: 1.3; }
+    .competitor-short-copy { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.6; }
+
+    .decision-simple-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; padding: 28px 0 10px; }
+    .decision-simple-grid h3 { margin-bottom: 10px; }
+    .plain-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .plain-list li { position: relative; padding-left: 18px; color: var(--ink-soft); font-size: 14px; }
+    .plain-list li::before { content: ""; position: absolute; top: 0.72em; left: 0; width: 7px; height: 2px; background: var(--caution); }
+
+    .decision-footer { display: flex; gap: 14px; align-items: flex-start; justify-content: space-between; padding: 18px 0; border-top: 1px solid var(--line); }
+    .decision-footer p { max-width: 72ch; margin: 0; color: var(--ink-soft); font-size: 13px; }
+    .analysis-detail { margin-top: 12px; color: var(--muted); font-size: 12px; }
+    .analysis-detail summary { cursor: pointer; color: var(--accent); }
+    .analysis-detail p { margin: 10px 0 0; }
+
+    .definition-row dt,
+    .definition-row dd { margin: 0; }
+
+    .definition-row dt {
+      margin-bottom: 2px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .definition-row dd {
+      color: var(--ink-soft);
+      font-size: 14px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .chart-panel {
+      min-width: 0;
+      padding: 20px 20px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface-raised);
+      box-shadow: 0 1px 2px rgba(23, 35, 51, 0.045), 0 10px 26px rgba(23, 35, 51, 0.035);
+    }
+
+    .chart-panel.full { grid-column: 1 / -1; }
+
+    .chart-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      min-height: 48px;
+      margin-bottom: 8px;
+    }
+
+    .chart-caption p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .chart {
+      width: 100%;
+      height: 320px;
+      min-height: 320px;
+    }
+
+    .chart.tall {
+      height: 400px;
+      min-height: 400px;
+    }
+
+    .scatter-key {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
+      gap: 7px 14px;
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-size: 10.5px;
+      line-height: 1.35;
+    }
+
+    .scatter-key-item {
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr);
+      gap: 7px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .scatter-key-index {
+      display: grid;
+      width: 20px;
+      height: 20px;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 720;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .scatter-key-label {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .series-key-marker {
+      width: 20px;
+      height: 3px;
+      margin-top: 6px;
+      border-radius: 2px;
+    }
+
+    .empty-state {
+      display: grid;
+      place-items: center;
+      min-height: 260px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .table-block {
+      margin-top: 18px;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: 0 0 0 1px var(--line);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      transition: box-shadow 140ms ease;
+    }
+
+    .table-scroll[data-overflow="true"][data-at-end="false"] {
+      box-shadow: inset -16px 0 12px -16px rgba(27, 54, 93, 0.72);
+    }
+
+    .subsection-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 28px 0 10px;
+    }
+
+    .subsection-heading h3 { font-size: 18px; }
+
+    .filter-row {
+      display: flex;
+      justify-content: flex-end;
+      margin: 0 0 12px;
+    }
+
+    .segmented-control {
+      display: inline-flex;
+      max-width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+
+    .segment-button {
+      flex: 0 0 auto;
+      min-height: 40px;
+      padding: 8px 12px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      color: var(--ink-soft);
+      background: transparent;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .segment-button:last-child { border-right: 0; }
+    .segment-button[aria-pressed="true"] { color: var(--accent); background: var(--accent-soft); font-weight: 720; }
+
+    .layer-band {
+      margin-top: 24px;
+      padding: 20px 0;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .layer-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .layer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+    }
+
+    .layer-item {
+      min-width: 0;
+      padding: 0 16px;
+      border-right: 1px solid var(--line);
+    }
+
+    .layer-item:first-child { padding-left: 0; }
+    .layer-item:last-child { padding-right: 0; border-right: 0; }
+    .layer-item dt { margin: 0 0 4px; color: var(--muted); font-size: 11px; }
+    .layer-item dd { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.65; }
+    .course-grid { gap: 18px 0; }
+    .course-grid .layer-item:nth-child(4n + 1) { padding-left: 0; }
+    .course-grid .layer-item:nth-child(4n) { padding-right: 0; border-right: 0; }
+
+    .layer-notes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 18px;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .layer-notes strong { color: var(--ink); }
+
+    .evidence-link {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    [hidden] { display: none !important; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      line-height: 1.62;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid rgba(23, 35, 51, 0.08);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--ink-soft);
+      background: #f5f7f9;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:nth-child(even) td { background: #fafbfc; }
+
+    td.numeric,
+    th.numeric {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .option-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .option-row {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) 210px;
+      gap: 18px;
+      align-items: start;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .option-row:last-child { border-bottom: 0; }
+
+    .option-name {
+      display: grid;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 720;
+    }
+
+    .option-detail {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 20px;
+    }
+
+    .option-scores {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .score-cell {
+      padding: 8px 9px;
+      border-radius: var(--radius-sm);
+      background: #f5f7f9;
+      color: var(--ink-soft);
+      font-size: 11px;
+    }
+
+    .score-cell strong {
+      display: block;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .evidence-list {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line-strong);
+    }
+
+    .evidence-item {
+      display: grid;
+      grid-template-columns: 70px 100px 64px minmax(0, 1fr) 130px;
+      gap: 18px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+
+    .evidence-id {
+      color: var(--accent);
+      font-weight: 720;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .evidence-meta { color: var(--muted); }
+
+    .source-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 28px;
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .source-item {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+
+    .source-grade {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 780;
+    }
+
+    .source-title {
+      color: var(--ink);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .source-meta {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .footer-note {
+      margin-top: 64px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line-strong);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    @media (hover: hover) {
+      .report-nav a:hover { color: var(--accent); }
+      .tool-button:hover { border-color: var(--accent); box-shadow: var(--shadow-raised); }
+      .source-title:hover { text-decoration: underline; text-underline-offset: 3px; }
+      tbody tr:hover td { background: rgba(24, 58, 102, 0.045); }
+    }
+
+    @media (max-width: 1100px) {
+      .main { padding-inline: 32px; }
+      h1 { font-size: 44px; }
+      h2 { font-size: 30px; }
+      .metric-value { font-size: 24px; }
+      .conclusion-statement { font-size: 32px; }
+      .metric-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .credibility-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric-item:nth-child(3) { border-right: 0; }
+      .metric-item:nth-child(-n + 3) { border-bottom: 1px solid var(--line); }
+      .credibility-strip .metric-item:nth-child(n) { border-right: 1px solid var(--line); border-bottom: 0; }
+      .credibility-strip .metric-item:nth-child(2n) { border-right: 0; }
+      .credibility-strip .metric-item:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+    }
+
+    @media (max-width: 840px) {
+      .topbar-primary,
+      .topbar-nav-row { width: calc(100% - 32px); }
+      .report-nav a { padding-inline: 12px; }
+      .main { padding: 36px 24px 72px; }
+      .masthead { grid-template-columns: 1fr; gap: 18px; }
+      .masthead-meta { min-width: 0; text-align: left; }
+      .section-heading { grid-template-columns: 1fr; gap: 12px; }
+      .mindshift-band { grid-template-columns: 1fr 40px 1fr; }
+      .option-row { grid-template-columns: 130px minmax(0, 1fr); }
+      .option-scores { grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .evidence-item { grid-template-columns: 58px 100px 64px minmax(0, 1fr); }
+      .evidence-meta { grid-column: 2 / -1; }
+      .layer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 0; }
+      .layer-item:nth-child(2) { border-right: 0; padding-right: 0; }
+      .layer-item:nth-child(3) { padding-left: 0; }
+      .course-grid .layer-item:nth-child(n) { padding-inline: 16px; border-right: 1px solid var(--line); }
+      .course-grid .layer-item:nth-child(2n + 1) { padding-left: 0; }
+      .course-grid .layer-item:nth-child(2n) { padding-right: 0; border-right: 0; }
+    }
+
+    @media (max-width: 640px) {
+      html { scroll-padding-top: 102px; }
+      .topbar-primary { min-height: 52px; }
+      .topbar[data-compact="true"] .topbar-primary { min-height: 46px; }
+      .topbar-status,
+      .brand-copy span { display: none; }
+      .brand-seal { width: 30px; height: 30px; flex-basis: 30px; font-size: 13px; }
+      .brand-copy strong { font-size: 14px; }
+      .topbar-nav-row { min-height: 40px; }
+      .report-nav a { min-height: 39px; padding-inline: 11px; font-size: 11px; }
+      .tool-button { min-height: 34px; padding: 6px 9px; }
+      .main { padding: 30px 16px 64px; }
+      .masthead { padding-bottom: 22px; }
+      .masthead-main { grid-template-columns: 64px minmax(0, 1fr); gap: 16px; }
+      .subject-monogram { width: 64px; font-size: 22px; }
+      .report-descriptor { font-size: 17px; }
+      h1 { max-width: none; font-size: 32px; }
+      h2 { font-size: 28px; }
+      .metric-value { font-size: 24px; }
+      .conclusion-statement { font-size: 30px; }
+      .metric-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric-item:nth-child(n) { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .metric-item:nth-child(2n) { border-right: 0; }
+      .metric-item:nth-last-child(-n + 2) { border-bottom: 0; }
+      .section { padding-top: 52px; }
+      .positioning-formula,
+      .mindshift-band,
+      .competitor-shorthand-grid,
+      .decision-simple-grid,
+      .chart-grid,
+      .option-detail,
+      .source-list { grid-template-columns: 1fr; }
+      .layer-grid,
+      .layer-notes { grid-template-columns: 1fr; }
+      .layer-item { padding: 12px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+      .course-grid .layer-item:nth-child(n) { padding: 12px 0; border-right: 0; }
+      .layer-item:last-child { border-bottom: 0; }
+      .mindshift-arrow { transform: rotate(90deg); }
+      .competitor-short-item { padding: 14px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+      .competitor-short-item:last-child { border-bottom: 0; }
+      .decision-footer { flex-direction: column; }
+      .filter-row { justify-content: flex-start; }
+      .chart-panel.full { grid-column: auto; }
+      .chart { height: 300px; min-height: 300px; }
+      .chart.tall { height: 360px; min-height: 360px; }
+      .scatter-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .option-row { grid-template-columns: 1fr; gap: 12px; }
+      .option-scores { grid-column: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .evidence-item { grid-template-columns: 54px 80px minmax(0, 1fr); gap: 8px 12px; }
+      .evidence-summary { grid-column: 1 / -1; }
+      .evidence-meta { grid-column: 1 / -1; }
+      .table-block { border-radius: var(--radius-sm); }
+      th, td { min-width: 112px; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 18mm 17mm 20mm; }
+      :root { --canvas: white; --parchment: white; --surface: white; --surface-raised: white; }
+      body { background: white; color: black; }
+      .topbar,
+      .skip-link,
+      .tool-button,
+      .segmented-control { display: none !important; }
+      .report-shell { display: block; }
+      .main { width: 176mm; max-width: 176mm; margin: 0 auto; padding: 0; }
+      .masthead { padding-top: 0; }
+      .section { padding-top: 34px; }
+      .section + .section { break-before: page; padding-top: 0; }
+      .section-heading { break-after: avoid; }
+      .section-heading + .chart-grid { break-before: avoid; }
+      #advantage-diagnosis .chart-grid,
+      #positioning-options .chart-grid { grid-template-columns: 1fr; }
+      #advantage-diagnosis .chart-panel,
+      #positioning-options .chart-panel { grid-column: 1 / -1; }
+      .chart-panel { box-shadow: 0 0 0 1px #d9dde2; break-inside: avoid; }
+      .chart { height: 250px !important; min-height: 250px !important; }
+      .scatter-key { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px 10px; font-size: 8.5px; }
+      .scatter-key-item { grid-template-columns: 17px minmax(0, 1fr); gap: 5px; }
+      .scatter-key-index { width: 17px; height: 17px; font-size: 8px; }
+      .table-block,
+      .layer-band,
+      .option-row,
+      .evidence-item,
+      .source-item { break-inside: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到报告正文</a>
+  <header class="topbar" id="report-topbar">
+    <div class="topbar-primary">
+      <a class="brand-mark" href="#main-content" aria-label="返回报告开头">
+        <span class="brand-seal" aria-hidden="true">位</span>
+        <span class="brand-copy"><strong>定位研究报告</strong><span>Positioning dossier</span></span>
+      </a>
+      <div class="topbar-actions">
+        <span class="topbar-status" id="topbar-subject"></span>
+        <button class="tool-button" type="button" id="print-report" aria-label="打印定位报告"><span aria-hidden="true">⎙</span><span>打印</span></button>
+      </div>
+    </div>
+    <div class="topbar-nav-row">
+      <nav class="report-nav" id="report-nav" aria-label="报告章节导航">
+        <a href="#positioning-conclusion">一句话定位</a>
+        <a href="#research-credibility">研究可信度</a>
+        <a href="#user-needs">用户需求</a>
+        <a href="#competitor-landscape">竞争格局</a>
+        <a href="#advantage-diagnosis">优势诊断</a>
+        <a href="#positioning-options">方案比较</a>
+        <a href="#strategic-actions">落地建议</a>
+        <a href="#validation-plan">市场验证</a>
+        <a href="#evidence-ledger">证据附录</a>
+      </nav>
+    </div>
+  </header>
+  <div class="report-shell">
+    <main class="main" id="main-content">
+      <header class="masthead">
+        <div class="masthead-main">
+          <div class="subject-monogram" id="subject-monogram" aria-hidden="true"></div>
+          <div class="masthead-copy">
+            <p class="eyebrow"><span id="subject-type"></span><span class="eyebrow-separator">/</span><span id="research-mode"></span></p>
+            <h1 id="subject-name"></h1>
+            <p class="report-descriptor" id="report-title"></p>
+          </div>
+        </div>
+        <div class="masthead-meta">
+          <div><span class="status-badge" id="report-status"></span></div>
+          <div id="report-date" style="margin-top: 10px"></div>
+          <div id="research-scope"></div>
+        </div>
+      </header>
+
+      <section class="section" id="positioning-conclusion" aria-labelledby="conclusion-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">01 / POSITION</span><h2 id="conclusion-title">一句话看懂定位</h2></div>
+          <p class="section-summary" id="conclusion-summary"></p>
+        </div>
+        <div class="mindshift-band">
+          <div>
+            <p class="mindshift-label">现在，别人容易把你当成</p>
+            <p class="mindshift-word" id="snapshot-current-label"></p>
+            <p class="mindshift-copy" id="snapshot-current-one-liner"></p>
+          </div>
+          <div class="mindshift-arrow" aria-hidden="true">→</div>
+          <div>
+            <p class="mindshift-label">建议，只让用户记住</p>
+            <p class="mindshift-word" id="snapshot-desired-label"></p>
+            <p class="mindshift-copy" id="snapshot-desired-category"></p>
+          </div>
+        </div>
+        <div class="plain-positioning">
+          <p class="conclusion-statement" id="recommended-positioning"></p>
+          <dl class="positioning-formula" id="positioning-formula"></dl>
+          <p class="contrast-sentence" id="snapshot-contrast"></p>
+        </div>
+        <div class="competitor-shorthand">
+          <h3>主要对手，一句话理解</h3>
+          <div class="competitor-shorthand-grid" id="competitor-shorthand-grid"></div>
+        </div>
+        <div class="decision-simple-grid">
+          <div><h3>为什么可以相信</h3><ul class="plain-list" id="snapshot-reasons"></ul></div>
+          <div><h3>为了这个位置，明确不做</h3><ul class="plain-list" id="snapshot-sacrifices"></ul></div>
+        </div>
+        <div class="decision-footer">
+          <span class="status-badge" id="decision-status"></span>
+          <p><strong>下一步：</strong><span id="decision-next-action"></span></p>
+        </div>
+        <details class="analysis-detail">
+          <summary>查看完整判断与反证条件</summary>
+          <p><strong>完整判断：</strong><span id="decision-rationale"></span></p>
+          <p><strong>什么情况说明定位不成立：</strong><span id="decision-counterevidence"></span></p>
+        </details>
+        <div class="metric-strip" id="metric-strip" aria-label="核心指标"></div>
+      </section>
+
+      <section class="section" id="research-credibility" aria-labelledby="credibility-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">02 / EVIDENCE</span><h2 id="credibility-title">研究可信度</h2></div>
+          <p class="section-summary">哪些是事实，哪些只是自己说的。</p>
+        </div>
+        <div class="chart-grid">
+          <article class="chart-panel">
+            <div class="chart-caption"><div><h3>来源等级结构</h3><p>A/B 级来源不自动等于结论成立</p></div></div>
+            <div class="chart" id="source-grade-chart" role="img" aria-label="来源等级结构图"></div>
+          </article>
+          <article class="chart-panel">
+            <div class="chart-caption"><div><h3>主张置信度</h3><p>诊断等级，不是统计概率</p></div></div>
+            <div class="chart" id="claim-confidence-chart" role="img" aria-label="主张置信度分布图"></div>
+          </article>
+        </div>
+        <div class="metric-strip credibility-strip" id="credibility-metrics" aria-label="研究质量补充指标"></div>
+      </section>
+
+      <section class="section" id="user-needs" aria-labelledby="needs-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">03 / DEMAND</span><h2 id="needs-title">用户需求与机会</h2></div>
+          <p class="section-summary">客户什么时候会需要你，愿意为什么付钱。</p>
+        </div>
+        <div class="chart-grid">
+          <article class="chart-panel full">
+            <div class="chart-caption"><div><h3>需求机会地图</h3><p>横轴为重要性，纵轴为不满程度，气泡大小代表紧迫性；同分点轻微错位，精确值见表格</p></div></div>
+            <div class="chart tall" id="need-map-chart" role="img" aria-label="用户需求机会地图"></div>
+          </article>
+        </div>
+        <div class="table-block"><div class="table-scroll"><table id="needs-table"><thead><tr><th>用户</th><th>场景</th><th>任务</th><th class="numeric">重要性</th><th class="numeric">紧迫性</th><th class="numeric">不满</th><th>付费信号</th></tr></thead><tbody></tbody></table></div></div>
+        <div class="subsection-heading"><h3>市场机会与无效空位</h3><span class="tag caution">需求、供给缺口与能力证据必须同时成立</span></div>
+        <div class="table-block"><div class="table-scroll"><table id="opportunity-table"><thead><tr><th>机会品类</th><th>关联需求</th><th>供应缺口</th><th>主要风险</th><th>置信度</th><th>证据</th></tr></thead><tbody></tbody></table></div></div>
+      </section>
+
+      <section class="section" id="competitor-landscape" aria-labelledby="competitor-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">04 / COMPETITION</span><h2 id="competitor-title">竞争格局与心智位置</h2></div>
+          <p class="section-summary">每个对手只看一件事：它已经让客户记住了什么。</p>
+        </div>
+        <div class="chart-grid">
+          <article class="chart-panel">
+            <div class="chart-caption"><div><h3>竞争角色覆盖</h3><p>判断研究集合是否覆盖真实替代方案</p></div></div>
+            <div class="chart" id="competitor-role-chart" role="img" aria-label="竞争角色覆盖图"></div>
+          </article>
+          <article class="chart-panel">
+            <div class="chart-caption"><div><h3>竞品定位散点</h3><p>横轴为差异强度，纵轴为用户相关性，点大小代表证据强度；同分点轻微错位，精确值见表格</p></div></div>
+            <div class="chart" id="competitor-map-chart" role="img" aria-label="竞品定位散点图"></div>
+          </article>
+          <article class="chart-panel full">
+            <div class="chart-caption"><div><h3>竞品定位画像雷达</h3><p>仅比较结构化诊断维度，不代表企业价值、市场份额或人物能力总分</p></div></div>
+            <div class="chart tall" id="competitor-radar-chart" role="img" aria-label="竞品定位画像雷达图"></div>
+          </article>
+          <article class="chart-panel full">
+            <div class="chart-caption"><div><h3>心智阶梯与已占位置</h3><p>阶梯等级越高表示当前资料中的认知显著性越高，不代表市场份额</p></div></div>
+            <div class="chart" id="mental-position-chart" role="img" aria-label="心智阶梯与已占位置图"></div>
+          </article>
+        </div>
+        <div class="filter-row"><div class="segmented-control" id="competitor-filter" role="group" aria-label="按竞争类型筛选竞品表">
+          <button class="segment-button" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="segment-button" type="button" data-filter="direct" aria-pressed="false">直接</button>
+          <button class="segment-button" type="button" data-filter="indirect" aria-pressed="false">间接</button>
+          <button class="segment-button" type="button" data-filter="status_quo" aria-pressed="false">现状</button>
+          <button class="segment-button" type="button" data-filter="inaction" aria-pressed="false">不行动</button>
+          <button class="segment-button" type="button" data-filter="benchmark" aria-pressed="false">标杆</button>
+        </div></div>
+        <div class="table-block"><div class="table-scroll"><table id="competitor-table"><thead><tr><th>对手</th><th>类型</th><th>一句话理解</th><th>记忆标签</th><th id="competitor-price-heading">价格 / 核验</th><th>强项</th><th>留给我们的机会</th><th>证据</th></tr></thead><tbody></tbody></table></div></div>
+        <div class="table-block"><div class="table-scroll"><table id="mental-position-table"><thead><tr><th>关键词</th><th>品类</th><th>占位者</th><th class="numeric">阶梯</th><th>状态</th><th>置信度</th><th>证据</th></tr></thead><tbody></tbody></table></div></div>
+      </section>
+
+      <section class="section" id="advantage-diagnosis" aria-labelledby="advantage-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">05 / DIFFERENCE</span><h2 id="advantage-title">差异化与优势诊断</h2></div>
+          <p class="section-summary">有效优势同时满足三个条件：客户在意、对手难学、你能证明。</p>
+        </div>
+        <div class="chart-grid">
+          <article class="chart-panel">
+            <div class="chart-caption"><div><h3>D6 优势热力图</h3><p>1 至 5 级诊断，必须结合证据与否决项阅读</p></div></div>
+            <div class="chart tall" id="advantage-heatmap-chart" role="img" aria-label="D6 优势诊断热力图"></div>
+          </article>
+          <article class="chart-panel">
+            <div class="chart-caption"><div><h3>核心优势结构雷达</h3><p>比较相关性、稀缺性、证据、防守性与战略匹配，最多显示前三项</p></div></div>
+            <div class="chart tall" id="advantage-radar-chart" role="img" aria-label="核心优势结构雷达图"></div>
+          </article>
+        </div>
+        <div class="table-block"><div class="table-scroll"><table id="advantage-table"><thead><tr><th>优势候选</th><th>解释</th><th>证据</th><th>否决项</th><th>状态</th></tr></thead><tbody></tbody></table></div></div>
+        <div class="layer-band" id="four-layer-positioning" hidden>
+          <div class="layer-header"><h3>使命、人设、商业、内容四层一致性</h3><span class="status-badge" id="four-layer-status"></span></div>
+          <dl class="layer-grid" id="four-layer-grid"></dl>
+          <div class="layer-notes"><div><strong>已对齐</strong><div id="four-layer-strengths"></div></div><div><strong>冲突与缺口</strong><div id="four-layer-conflicts"></div></div></div>
+        </div>
+        <div class="layer-band" id="course-marketing-extension" hidden>
+          <div class="layer-header"><h3>课程营销定位扩展</h3><span class="tag caution">靶心人 · 行动路径 · 4P</span></div>
+          <dl class="layer-grid course-grid" id="course-extension-grid"></dl>
+          <div class="subsection-heading"><h3>靶心人行动路径与痛点</h3><span class="tag caution">具体任务与证据</span></div>
+          <div class="table-block"><div class="table-scroll"><table id="course-action-path-table"><thead><tr><th>阶段</th><th>用户任务</th><th>核心痛点</th><th>当前方案</th><th>证据</th></tr></thead><tbody></tbody></table></div></div>
+          <div class="subsection-heading"><h3>蓝海市场 4P 差异</h3><span class="tag caution">基线与战略取舍</span></div>
+          <div class="table-block"><div class="table-scroll"><table id="course-4p-table"><thead><tr><th>维度</th><th>当前基线</th><th>差异选择</th><th>证据</th></tr></thead><tbody></tbody></table></div></div>
+        </div>
+      </section>
+
+      <section class="section" id="positioning-options" aria-labelledby="options-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">06 / OPTIONS</span><h2 id="options-title">定位方案比较</h2></div>
+          <p class="section-summary">三个方案只比较：好不好懂、有没有不同、能不能做到。</p>
+        </div>
+        <div class="chart-grid">
+          <article class="chart-panel">
+            <div class="chart-caption"><div><h3>方案机会图</h3><p>横轴为品类清晰度，纵轴为竞争独特性，气泡大小代表用户价值；同分点轻微错位，精确值见方案卡</p></div></div>
+            <div class="chart tall" id="option-map-chart" role="img" aria-label="定位方案机会图"></div>
+          </article>
+          <article class="chart-panel">
+            <div class="chart-caption"><div><h3>定位方案权衡雷达</h3><p>执行可行性 = 6 − 执行成本；风险可控性 = 6 − 风险等级</p></div></div>
+            <div class="chart tall" id="option-radar-chart" role="img" aria-label="定位方案权衡雷达图"></div>
+          </article>
+        </div>
+        <div class="option-list" id="option-list"></div>
+      </section>
+
+      <section class="section" id="strategic-actions" aria-labelledby="actions-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">07 / ACTION</span><h2 id="actions-title">表达、产品、内容、价格、渠道与销售建议</h2></div>
+          <p class="section-summary">让官网、产品、价格、渠道和销售都重复同一个定位。</p>
+        </div>
+        <div class="table-block"><div class="table-scroll"><table id="actions-table"><thead><tr><th>领域</th><th>行动</th><th>理由</th><th>优先级</th><th>负责人</th><th>周期</th><th>成功信号</th><th>证据</th></tr></thead><tbody></tbody></table></div></div>
+      </section>
+
+      <section class="section" id="validation-plan" aria-labelledby="validation-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">08 / VALIDATE</span><h2 id="validation-title">市场验证计划</h2></div>
+          <p class="section-summary">先看客户能否听懂和记住，再看是否愿意购买。</p>
+        </div>
+        <div class="chart-grid">
+          <article class="chart-panel full">
+            <div class="chart-caption"><div><h3>首轮验证门槛</h3><p>门槛来自当前决策规则，不宣称为行业标准</p></div></div>
+            <div class="chart" id="validation-chart" role="img" aria-label="首轮验证门槛图"></div>
+          </article>
+        </div>
+        <div class="table-block"><div class="table-scroll"><table id="validation-table"><thead><tr><th>假设</th><th>受众</th><th>方法</th><th>指标</th><th class="numeric">门槛</th><th class="numeric">样本</th><th class="numeric">周期</th><th>决策规则</th></tr></thead><tbody></tbody></table></div></div>
+      </section>
+
+      <section class="section" id="evidence-ledger" aria-labelledby="evidence-title">
+        <div class="section-heading">
+          <div><span class="section-kicker">09 / APPENDIX</span><h2 id="evidence-title">证据台账与来源</h2></div>
+          <p class="section-summary">想追问依据时，再看这里。</p>
+        </div>
+        <div class="filter-row"><div class="segmented-control" id="claim-filter" role="group" aria-label="按主张类型筛选证据">
+          <button class="segment-button" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="segment-button" type="button" data-filter="fact" aria-pressed="false">事实</button>
+          <button class="segment-button" type="button" data-filter="self_report" aria-pressed="false">自述</button>
+          <button class="segment-button" type="button" data-filter="inference" aria-pressed="false">推断</button>
+          <button class="segment-button" type="button" data-filter="hypothesis" aria-pressed="false">假设</button>
+          <button class="segment-button" type="button" data-filter="recommendation" aria-pressed="false">建议</button>
+        </div></div>
+        <ul class="evidence-list" id="evidence-list"></ul>
+        <ul class="source-list" id="source-list"></ul>
+      </section>
+
+      <footer class="footer-note" id="footer-note"></footer>
+    </main>
+  </div>
+
+  <script id="report-data" type="application/json">{{REPORT_DATA}}</script>
+  <script>{{ECHARTS_JS}}</script>
+  <script>
+    (() => {
+      "use strict";
+      const data = JSON.parse(document.getElementById("report-data").textContent);
+      const charts = [];
+      const colors = {
+        ink: "#172333",
+        accent: "#183a66",
+        positive: "#356b56",
+        caution: "#8b671f",
+        risk: "#994737",
+        olive: "#626b59",
+        muted: "#6f7883",
+        line: "#e6e9ed",
+        unknown: "#9aa1a9"
+      };
+
+      const text = (value) => value === null || value === undefined || value === "" ? "证据不足" : String(value);
+      const listText = (value, emptyLabel = "证据不足") => Array.isArray(value) && value.length ? value.join("、") : emptyLabel;
+      const percentage = (value) => typeof value === "number" && Number.isFinite(value) ? `${Math.round(value * 100)}%` : "证据不足";
+      const score = (value) => typeof value === "number" && Number.isFinite(value) ? `${value}/5` : "证据不足";
+      const thresholdText = (value, unit) => unit === "score_5" && typeof value === "number" && Number.isFinite(value) ? `${value}/5` : percentage(value);
+      const isScore = (value) => typeof value === "number" && Number.isFinite(value) && value >= 1 && value <= 5;
+      const spreadScatterPoints = (items, xValue, yValue, axisMax = 5) => {
+        const counts = new Map();
+        const seen = new Map();
+        items.forEach((item) => {
+          const key = `${xValue(item)}|${yValue(item)}`;
+          counts.set(key, (counts.get(key) || 0) + 1);
+        });
+        return items.map((item) => {
+          const x = Number(xValue(item));
+          const y = Number(yValue(item));
+          const key = `${x}|${y}`;
+          const total = counts.get(key) || 1;
+          const index = seen.get(key) || 0;
+          seen.set(key, index + 1);
+          if (total === 1) {
+            return { offset: [0, 0], position: y >= axisMax - 0.25 ? "bottom" : x >= axisMax - 0.25 ? "left" : "top" };
+          }
+          const displacement = (index - (total - 1) / 2) * 44;
+          if (y >= axisMax - 0.25) {
+            const direction = x >= axisMax - 0.25 ? -1 : 1;
+            return { offset: [direction * (index % 2) * 44, 18 + Math.floor(index / 2) * 44], position: "inside" };
+          }
+          if (x >= axisMax - 0.25) return { offset: [0, displacement], position: "left" };
+          return { offset: [displacement, index % 2 ? 7 : -7], position: index % 2 ? "right" : "left" };
+        });
+      };
+      const create = (tag, className, value) => {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (value !== undefined) element.textContent = text(value);
+        return element;
+      };
+      const renderScatterKey = (chartId, items, labelValue, colorValue) => {
+        const chart = document.getElementById(chartId);
+        const key = create("div", "scatter-key");
+        key.dataset.chartKey = chartId;
+        key.setAttribute("aria-label", `${chart.getAttribute("aria-label") || "散点图"}编号索引`);
+        items.forEach((item, index) => {
+          const row = create("div", "scatter-key-item");
+          const marker = create("span", "scatter-key-index", index + 1);
+          marker.style.backgroundColor = colorValue(item, index);
+          row.append(marker, create("span", "scatter-key-label", labelValue(item)));
+          key.append(row);
+        });
+        chart.insertAdjacentElement("afterend", key);
+      };
+      const renderSeriesKey = (chartId, items, labelValue) => {
+        const chart = document.getElementById(chartId);
+        const key = create("div", "scatter-key");
+        key.dataset.seriesKey = chartId;
+        key.setAttribute("aria-label", `${chart.getAttribute("aria-label") || "雷达图"}系列索引`);
+        items.forEach((item, index) => {
+          const row = create("div", "scatter-key-item");
+          const marker = create("span", "series-key-marker");
+          marker.style.backgroundColor = radarPalette[index % radarPalette.length];
+          row.append(marker, create("span", "scatter-key-label", labelValue(item)));
+          key.append(row);
+        });
+        chart.insertAdjacentElement("afterend", key);
+      };
+      const appendText = (target, value) => { target.textContent = text(value); };
+      const safeHttpUrl = (value) => {
+        if (typeof value !== "string" || !/^https?:\/\//i.test(value)) return null;
+        try {
+          const parsed = new URL(value);
+          return parsed.protocol === "https:" || parsed.protocol === "http:" ? parsed.href : null;
+        } catch (_) {
+          return null;
+        }
+      };
+      const statusLabel = (status) => ({
+        execute: "可以执行",
+        validate_first: "建议先验证",
+        insufficient_evidence: "证据不足",
+        recommended: "推荐",
+        alternative: "备选",
+        reserve: "保留",
+        rejected: "否决",
+        eligible: "可进入定位",
+        validate: "待验证",
+        reject: "否决",
+        occupied: "已占据",
+        contested: "争夺中",
+        candidate: "候选位置",
+        unverified: "未验证",
+        aligned: "一致",
+        partial: "部分一致",
+        conflicted: "存在冲突",
+        insufficient: "证据不足",
+        high: "高",
+        medium: "中",
+        low: "低",
+        current: "时效内",
+        stale: "已过期",
+        not_applicable: "不适用",
+        unknown: "时效未知"
+      }[status] || text(status));
+      const subjectTypeLabel = (value) => ({ personal_ip: "个人 IP", course: "课程", product: "产品", service: "服务", brand: "品牌", company: "企业" }[value] || text(value));
+      const researchModeLabel = (value) => ({ local: "本地证据", standard: "标准研究", deep: "深度研究" }[value] || text(value));
+      const competitorTypeLabel = (value) => ({ direct: "直接竞品", indirect: "间接方案", status_quo: "现状方案", inaction: "不行动", benchmark: "心智标杆" }[value] || text(value));
+      const perspectiveLabel = (value) => ({ official: "官方视角", user: "用户视角", independent: "独立视角", internal: "内部资料", mixed: "混合视角" }[value] || text(value));
+      const marketFitLabel = (value) => ({ aligned: "市场匹配", partial: "部分匹配", mismatch: "不匹配", unknown: "适配未知" }[value] || text(value));
+
+      function setStatus(element, status) {
+        element.dataset.status = status || "insufficient_evidence";
+        element.textContent = statusLabel(status);
+      }
+
+      function renderHeader() {
+        appendText(document.getElementById("subject-type"), subjectTypeLabel(data.subject.type));
+        appendText(document.getElementById("research-mode"), researchModeLabel(data.meta.research_mode));
+        appendText(document.getElementById("subject-name"), data.subject.name);
+        appendText(document.getElementById("topbar-subject"), data.subject.name);
+        appendText(document.getElementById("subject-monogram"), String(data.subject.name || "定位").slice(0, 2));
+        if (data.subject.type === "personal_ip") appendText(document.getElementById("competitor-price-heading"), "商业价格 / 研究范围");
+        appendText(document.getElementById("report-title"), data.meta.report_title);
+        setStatus(document.getElementById("report-status"), data.executive_summary.recommendation_status);
+        appendText(document.getElementById("report-date"), `报告日期 ${data.meta.generated_at}`);
+        appendText(document.getElementById("research-scope"), `${text(data.research_scope.region)} · ${text(data.research_scope.time_window)}`);
+      }
+
+      function renderMetrics() {
+        const metrics = data.computed_metrics || {};
+        const definitions = [
+          ["有证据的判断", percentage(metrics.evidence_coverage_rate)],
+          ["有外部证据", percentage(metrics.independent_corroboration_rate)],
+          ["对手研究完整度", percentage(metrics.competitor_set_coverage)],
+          ["已证实的差异", text(metrics.valid_difference_count)],
+          ["一句话好懂程度", score(metrics.recommended_category_clarity)],
+          ["主要风险", text(metrics.key_risk_count)]
+        ];
+        const container = document.getElementById("metric-strip");
+        definitions.forEach(([label, value]) => {
+          const item = create("div", "metric-item");
+          item.append(create("span", "metric-label", label), create("span", "metric-value", value));
+          container.append(item);
+        });
+      }
+
+      function renderCredibilityMetrics() {
+        const metrics = data.computed_metrics || {};
+        const definitions = [
+          ["A/B 级证据占比", percentage(metrics.ab_source_share)],
+          ["时效合规率", percentage(metrics.freshness_compliance_rate)],
+          ["本地市场适配证据", percentage(metrics.market_fit_coverage_rate)],
+          ["竞品证据覆盖率", percentage(metrics.competitor_evidence_coverage)],
+          ["核心竞品用户侧证据", percentage(metrics.competitor_user_evidence_coverage)]
+        ];
+        const container = document.getElementById("credibility-metrics");
+        definitions.forEach(([label, value]) => {
+          const item = create("div", "metric-item");
+          item.append(create("span", "metric-label", label), create("span", "metric-value", value));
+          container.append(item);
+        });
+      }
+
+      function definition(label, value) {
+        const row = create("div", "definition-row");
+        row.append(create("dt", "", label), create("dd", "", value));
+        return row;
+      }
+
+      function renderConclusion() {
+        const summary = data.executive_summary;
+        const snapshot = data.positioning_snapshot;
+        appendText(document.getElementById("conclusion-summary"), snapshot.current_problem);
+        appendText(document.getElementById("snapshot-current-label"), snapshot.current_mental_label);
+        appendText(document.getElementById("snapshot-current-one-liner"), snapshot.current_one_liner);
+        appendText(document.getElementById("snapshot-desired-label"), snapshot.desired_mental_label);
+        appendText(document.getElementById("snapshot-desired-category"), snapshot.desired_category);
+        appendText(document.getElementById("recommended-positioning"), snapshot.desired_one_liner);
+        appendText(document.getElementById("snapshot-contrast"), snapshot.contrast_sentence);
+        const formula = document.getElementById("positioning-formula");
+        formula.append(
+          definition("给谁", data.subject.target_users[0]),
+          definition("我们是什么", snapshot.desired_category),
+          definition("最关键的不同", summary.differentiation_label)
+        );
+        const directCompetitors = data.competitors.filter((item) => item.competitor_type === "direct");
+        directCompetitors.sort((first, second) => Number(second.competitor_id === snapshot.primary_competitor_id) - Number(first.competitor_id === snapshot.primary_competitor_id));
+        const shorthand = directCompetitors.length >= 3 ? directCompetitors.slice(0, 3) : data.competitors.slice(0, 3);
+        const shorthandGrid = document.getElementById("competitor-shorthand-grid");
+        shorthand.forEach((item) => {
+          const block = create("article", "competitor-short-item");
+          block.append(
+            create("span", "competitor-short-name", item.name),
+            create("strong", "competitor-short-word", item.mindshare_keywords?.[0] || item.category),
+            create("p", "competitor-short-copy", item.positioning_statement)
+          );
+          shorthandGrid.append(block);
+        });
+        const appendList = (id, values) => {
+          const list = document.getElementById(id);
+          values.forEach((value) => list.append(create("li", "", value)));
+        };
+        appendList("snapshot-reasons", snapshot.reason_to_believe);
+        appendList("snapshot-sacrifices", snapshot.sacrifice);
+        setStatus(document.getElementById("decision-status"), summary.recommendation_status);
+        appendText(document.getElementById("decision-rationale"), summary.rationale);
+        appendText(document.getElementById("decision-counterevidence"), summary.counterevidence_condition);
+        appendText(document.getElementById("decision-next-action"), summary.next_action);
+      }
+
+      const baseTextStyle = { color: colors.muted, fontFamily: '-apple-system,"PingFang SC",sans-serif', fontSize: 11 };
+      const baseTooltip = { aria: { enabled: true }, tooltip: { renderMode: "richText", triggerOn: "mousemove|click", confine: true, backgroundColor: "#172333", borderWidth: 0, textStyle: { color: "#ffffff", fontSize: 11 } } };
+      const grid = { left: 44, right: 24, top: 24, bottom: 42, containLabel: true };
+      const scatterGrid = { left: 40, right: 48, top: 32, bottom: 50, containLabel: true };
+      const scatterPointLabel = { show: true, position: "inside", color: "#ffffff", fontSize: 10, fontWeight: 720 };
+      const radarPalette = [colors.accent, colors.positive, colors.caution, colors.risk, colors.olive];
+
+      function radarFrame(indicators) {
+        return {
+          legend: { show: false },
+          radar: {
+            center: ["50%", "50%"],
+            radius: "64%",
+            splitNumber: 4,
+            indicator: indicators,
+            axisName: { ...baseTextStyle, color: colors.ink },
+            axisLine: { lineStyle: { color: "rgba(23,35,51,.13)" } },
+            splitLine: { lineStyle: { color: "rgba(23,35,51,.10)" } },
+            splitArea: { areaStyle: { color: ["rgba(255,255,255,.98)", "rgba(237,241,245,.58)"] } }
+          }
+        };
+      }
+
+      function mountChart(id, option, hasData) {
+        const element = document.getElementById(id);
+        if (!hasData || typeof echarts === "undefined") {
+          element.className = "empty-state";
+          element.textContent = "证据不足，暂不生成图表";
+          return;
+        }
+        const instance = echarts.init(element, null, { renderer: "svg" });
+        instance.setOption({ animation: false, ...option });
+        charts.push(instance);
+      }
+
+      function chartOptions() {
+        const metrics = data.computed_metrics || {};
+        const gradeCounts = metrics.source_grade_counts || {};
+        mountChart("source-grade-chart", {
+          ...baseTooltip,
+          grid,
+          xAxis: { type: "category", data: ["A", "B", "C", "D", "E"], axisLine: { lineStyle: { color: colors.line } }, axisLabel: baseTextStyle },
+          yAxis: { type: "value", minInterval: 1, splitLine: { lineStyle: { color: colors.line } }, axisLabel: baseTextStyle },
+          series: [{ type: "bar", data: ["A", "B", "C", "D", "E"].map((key) => gradeCounts[key] || 0), barMaxWidth: 34, itemStyle: { color: colors.accent, borderRadius: [3, 3, 0, 0] } }]
+        }, Object.keys(gradeCounts).length > 0);
+
+        const confidenceCounts = metrics.claim_confidence_counts || {};
+        const confidenceOrder = ["high", "medium", "low", "insufficient"];
+        mountChart("claim-confidence-chart", {
+          ...baseTooltip,
+          grid,
+          xAxis: { type: "category", data: ["高", "中", "低", "证据不足"], axisLine: { lineStyle: { color: colors.line } }, axisLabel: baseTextStyle },
+          yAxis: { type: "value", minInterval: 1, splitLine: { lineStyle: { color: colors.line } }, axisLabel: baseTextStyle },
+          series: [{ type: "bar", data: confidenceOrder.map((key, index) => ({ value: confidenceCounts[key] || 0, itemStyle: { color: [colors.positive, colors.accent, colors.caution, colors.risk][index] } })), barMaxWidth: 34 }]
+        }, Object.keys(confidenceCounts).length > 0);
+
+        const needs = data.user_needs || [];
+        const chartNeeds = needs.filter((item) => isScore(item.importance) && isScore(item.dissatisfaction) && isScore(item.urgency));
+        const needLayouts = spreadScatterPoints(chartNeeds, (item) => item.importance, (item) => item.dissatisfaction);
+        mountChart("need-map-chart", {
+          ...baseTooltip,
+          grid: scatterGrid,
+          xAxis: { type: "value", name: "重要性", min: 1, max: 5, interval: 1, nameTextStyle: baseTextStyle, axisLabel: baseTextStyle, splitLine: { lineStyle: { color: colors.line } } },
+          yAxis: { type: "value", name: "不满程度", min: 1, max: 5, interval: 1, nameTextStyle: baseTextStyle, axisLabel: baseTextStyle, splitLine: { lineStyle: { color: colors.line } } },
+          series: [{ type: "scatter", data: chartNeeds.map((item, index) => ({ name: item.segment, value: [item.importance, item.dissatisfaction, item.urgency], task: item.task, symbolOffset: needLayouts[index].offset, label: { formatter: String(index + 1) } })), symbolSize: (value) => 24 + Number(value[2] || 1) * 3, itemStyle: { color: colors.accent, opacity: 0.82 }, label: scatterPointLabel, tooltip: { formatter: (params) => `${params.name}\n${params.data.task}\n重要性 ${params.value[0]}/5 · 不满 ${params.value[1]}/5 · 紧迫 ${params.value[2]}/5` } }]
+        }, chartNeeds.length > 0);
+        renderScatterKey("need-map-chart", chartNeeds, (item) => item.segment, () => colors.accent);
+
+        const roleCounts = metrics.competitor_type_counts || {};
+        const roles = ["direct", "indirect", "status_quo", "inaction", "benchmark"];
+        const roleLabels = ["直接", "间接", "现状", "不行动", "标杆"];
+        mountChart("competitor-role-chart", {
+          ...baseTooltip,
+          grid,
+          xAxis: { type: "category", data: roleLabels, axisLabel: baseTextStyle, axisLine: { lineStyle: { color: colors.line } } },
+          yAxis: { type: "value", minInterval: 1, axisLabel: baseTextStyle, splitLine: { lineStyle: { color: colors.line } } },
+          series: [{ type: "bar", data: roles.map((key) => roleCounts[key] || 0), barMaxWidth: 34, itemStyle: { color: colors.accent, borderRadius: [3, 3, 0, 0] } }]
+        }, Object.keys(roleCounts).length > 0);
+
+        const competitors = data.competitors || [];
+        const chartCompetitors = competitors.filter((item) => isScore(item.differentiation_strength) && isScore(item.user_relevance) && isScore(item.proof_strength));
+        const competitorLayouts = spreadScatterPoints(chartCompetitors, (item) => item.differentiation_strength, (item) => item.user_relevance);
+        mountChart("competitor-map-chart", {
+          ...baseTooltip,
+          grid: scatterGrid,
+          xAxis: { type: "value", name: "差异强度", min: 1, max: 5, interval: 1, nameTextStyle: baseTextStyle, axisLabel: baseTextStyle, splitLine: { lineStyle: { color: colors.line } } },
+          yAxis: { type: "value", name: "用户相关", min: 1, max: 5, interval: 1, nameTextStyle: baseTextStyle, axisLabel: baseTextStyle, splitLine: { lineStyle: { color: colors.line } } },
+          series: [{ type: "scatter", data: chartCompetitors.map((item, index) => ({ name: item.name, value: [item.differentiation_strength, item.user_relevance, item.proof_strength], category: item.category, positioning: item.positioning_statement, evidence: item.evidence_ids, symbolOffset: competitorLayouts[index].offset, label: { formatter: String(index + 1) } })), symbolSize: (value) => 24 + Number(value[2] || 1) * 3, itemStyle: { color: colors.caution, opacity: 0.82 }, label: scatterPointLabel, tooltip: { formatter: (params) => `${params.name}\n${params.data.category}\n${params.data.positioning}\n差异 ${params.value[0]}/5 · 相关 ${params.value[1]}/5 · 证据 ${params.value[2]}/5\n证据 ${params.data.evidence?.join(", ") || "未验证"}` } }]
+        }, chartCompetitors.length > 0);
+        renderScatterKey("competitor-map-chart", chartCompetitors, (item) => item.name, () => colors.caution);
+
+        const mentalPositions = (data.mental_positions || []).filter((item) => isScore(item.ladder_level));
+        const mentalPositionByOccupant = new Map();
+        mentalPositions.forEach((item) => {
+          const previous = mentalPositionByOccupant.get(item.occupant);
+          if (!previous || item.ladder_level > previous.ladder_level) mentalPositionByOccupant.set(item.occupant, item);
+        });
+        const radarCompetitors = chartCompetitors
+          .filter((item) => item.competitor_type !== "status_quo" && item.competitor_type !== "inaction")
+          .map((item) => ({ ...item, mental_position: mentalPositionByOccupant.get(item.name) }))
+          .filter((item) => item.mental_position)
+          .slice(0, 5);
+        mountChart("competitor-radar-chart", {
+          ...baseTooltip,
+          ...radarFrame([
+            { name: "品类清晰", max: 5 },
+            { name: "差异强度", max: 5 },
+            { name: "证据强度", max: 5 },
+            { name: "用户相关", max: 5 },
+            { name: "心智显著", max: 5 }
+          ]),
+          color: radarPalette,
+          series: [{
+            type: "radar",
+            symbolSize: 5,
+            lineStyle: { width: 1.5 },
+            areaStyle: { opacity: 0.035 },
+            data: radarCompetitors.map((item) => ({
+              name: item.name,
+              value: [item.category_clarity, item.differentiation_strength, item.proof_strength, item.user_relevance, item.mental_position.ladder_level],
+              evidence: [...new Set([...(item.evidence_ids || []), ...(item.mental_position.evidence_ids || [])])],
+              tooltip: { formatter: `${item.name}\n品类 ${item.category_clarity}/5 · 差异 ${item.differentiation_strength}/5\n证据 ${item.proof_strength}/5 · 相关 ${item.user_relevance}/5 · 心智 ${item.mental_position.ladder_level}/5\n证据 ${[...new Set([...(item.evidence_ids || []), ...(item.mental_position.evidence_ids || [])])].join(", ") || "未验证"}` }
+            }))
+          }]
+        }, radarCompetitors.length > 1);
+        renderSeriesKey("competitor-radar-chart", radarCompetitors, (item) => item.name);
+
+        const mentalColors = { occupied: colors.accent, contested: colors.caution, candidate: colors.positive, unverified: colors.unknown };
+        mountChart("mental-position-chart", {
+          ...baseTooltip,
+          grid: { left: 110, right: 36, top: 22, bottom: 38, containLabel: true },
+          xAxis: { type: "value", name: "认知显著性等级", min: 0, max: 5, interval: 1, nameTextStyle: baseTextStyle, axisLabel: baseTextStyle, splitLine: { lineStyle: { color: colors.line } } },
+          yAxis: { type: "category", data: mentalPositions.map((item) => item.keyword), axisLabel: { ...baseTextStyle, width: 100, overflow: "break" }, axisLine: { lineStyle: { color: colors.line } } },
+          series: [{ type: "bar", data: mentalPositions.map((item) => ({ value: item.ladder_level, itemStyle: { color: mentalColors[item.status] || colors.unknown }, occupant: item.occupant, category: item.category, status: item.status, confidence: item.confidence, evidence: item.evidence_ids })), barMaxWidth: 26, label: { show: true, position: "right", color: colors.ink, formatter: (params) => `${params.value}/5` }, tooltip: { formatter: (params) => `${params.name}\n${params.data.category} · ${params.data.occupant}\n${statusLabel(params.data.status)} · 置信度 ${statusLabel(params.data.confidence)}\n证据 ${params.data.evidence?.join(", ") || "未验证"}` } }]
+        }, mentalPositions.length > 0);
+
+        const dimensions = ["用户相关", "竞争稀缺", "证据强度", "可防御", "战略适配", "表达聚焦"];
+        const dimensionKeys = ["relevance", "rarity", "evidence_strength", "defensibility", "strategic_fit", "expression_focus"];
+        const advantages = data.advantages || [];
+        const heatmapData = [];
+        advantages.forEach((item, y) => dimensionKeys.forEach((key, x) => heatmapData.push([x, y, item[key] ?? null])));
+        mountChart("advantage-heatmap-chart", {
+          ...baseTooltip,
+          grid: { left: 100, right: 36, top: 28, bottom: 48, containLabel: true },
+          xAxis: { type: "category", data: dimensions, axisLabel: { ...baseTextStyle, interval: 0 }, axisLine: { lineStyle: { color: colors.line } } },
+          yAxis: { type: "category", data: advantages.map((item) => item.label), axisLabel: { ...baseTextStyle, width: 92, overflow: "break" }, axisLine: { lineStyle: { color: colors.line } } },
+          visualMap: { min: 1, max: 5, orient: "horizontal", left: "center", bottom: 0, calculable: false, inRange: { color: ["#f3f5f7", "#dce3ea", "#9aacbe", "#183a66"] }, textStyle: baseTextStyle },
+          series: [{ type: "heatmap", data: heatmapData, label: { show: true, color: "#172333", fontSize: 11 }, tooltip: { formatter: (params) => `${advantages[params.value[1]]?.label}\n${dimensions[params.value[0]]} ${params.value[2]}/5\n${advantages[params.value[1]]?.description}\n证据 ${advantages[params.value[1]]?.evidence_ids?.join(", ") || "证据不足"}` }, emphasis: { itemStyle: { shadowBlur: 8, shadowColor: "rgba(23,35,51,.16)" } } }]
+        }, heatmapData.some((item) => isScore(item[2])));
+
+        const radarAdvantages = advantages
+          .filter((item) => [item.relevance, item.rarity, item.evidence_strength, item.defensibility, item.strategic_fit].every(isScore))
+          .sort((a, b) => [b.relevance, b.rarity, b.evidence_strength, b.defensibility, b.strategic_fit].reduce((sum, value) => sum + value, 0) - [a.relevance, a.rarity, a.evidence_strength, a.defensibility, a.strategic_fit].reduce((sum, value) => sum + value, 0))
+          .slice(0, 3);
+        mountChart("advantage-radar-chart", {
+          ...baseTooltip,
+          ...radarFrame([
+            { name: "用户相关", max: 5 },
+            { name: "竞争稀缺", max: 5 },
+            { name: "证据强度", max: 5 },
+            { name: "可防御", max: 5 },
+            { name: "战略适配", max: 5 }
+          ]),
+          color: radarPalette,
+          series: [{
+            type: "radar",
+            symbolSize: 5,
+            lineStyle: { width: 1.7 },
+            areaStyle: { opacity: 0.045 },
+            data: radarAdvantages.map((item) => ({
+              name: item.label,
+              value: [item.relevance, item.rarity, item.evidence_strength, item.defensibility, item.strategic_fit],
+              tooltip: { formatter: `${item.label}\n相关 ${item.relevance}/5 · 稀缺 ${item.rarity}/5 · 证据 ${item.evidence_strength}/5\n防守 ${item.defensibility}/5 · 战略 ${item.strategic_fit}/5\n证据 ${item.evidence_ids?.join(", ") || "证据不足"}` }
+            }))
+          }]
+        }, radarAdvantages.length > 0);
+        renderSeriesKey("advantage-radar-chart", radarAdvantages, (item) => item.label);
+
+        const options = data.positioning_options || [];
+        const chartOptionsData = options.filter((item) => isScore(item.category_clarity) && isScore(item.competitive_uniqueness) && isScore(item.user_value) && isScore(item.risk_level));
+        const optionLayouts = spreadScatterPoints(chartOptionsData, (item) => item.category_clarity, (item) => item.competitive_uniqueness);
+        mountChart("option-map-chart", {
+          ...baseTooltip,
+          grid: scatterGrid,
+          xAxis: { type: "value", name: "品类清晰度", min: 1, max: 5, interval: 1, nameTextStyle: baseTextStyle, axisLabel: baseTextStyle, splitLine: { lineStyle: { color: colors.line } } },
+          yAxis: { type: "value", name: "竞争独特性", min: 1, max: 5, interval: 1, nameTextStyle: baseTextStyle, axisLabel: baseTextStyle, splitLine: { lineStyle: { color: colors.line } } },
+          series: [{ type: "scatter", data: chartOptionsData.map((item, index) => ({ name: item.name, value: [item.category_clarity, item.competitive_uniqueness, item.user_value, item.risk_level], status: item.status, rationale: item.rationale, evidence: item.evidence_ids, symbolOffset: optionLayouts[index].offset, label: { formatter: String(index + 1) } })), symbolSize: (value) => 26 + Number(value[2] || 1) * 3, itemStyle: { color: (params) => params.data.status === "recommended" ? colors.positive : params.value[3] >= 4 ? colors.risk : colors.accent, opacity: 0.84 }, label: scatterPointLabel, tooltip: { formatter: (params) => `${params.name}\n品类 ${params.value[0]}/5 · 独特 ${params.value[1]}/5 · 价值 ${params.value[2]}/5 · 风险 ${params.value[3]}/5\n${params.data.rationale}\n证据 ${params.data.evidence?.join(", ") || "证据不足"}` } }]
+        }, chartOptionsData.length > 0);
+        renderScatterKey("option-map-chart", chartOptionsData, (item) => item.name, (item) => item.status === "recommended" ? colors.positive : item.risk_level >= 4 ? colors.risk : colors.accent);
+
+        mountChart("option-radar-chart", {
+          ...baseTooltip,
+          ...radarFrame([
+            { name: "品类清晰", max: 5 },
+            { name: "竞争独特", max: 5 },
+            { name: "用户价值", max: 5 },
+            { name: "执行可行", max: 5 },
+            { name: "风险可控", max: 5 }
+          ]),
+          color: radarPalette,
+          series: [{
+            type: "radar",
+            symbolSize: 5,
+            lineStyle: { width: 1.7 },
+            areaStyle: { opacity: 0.045 },
+            data: chartOptionsData.map((item) => ({
+              name: item.name,
+              value: [item.category_clarity, item.competitive_uniqueness, item.user_value, 6 - item.execution_cost, 6 - item.risk_level],
+              tooltip: { formatter: `${item.name}\n品类 ${item.category_clarity}/5 · 独特 ${item.competitive_uniqueness}/5 · 价值 ${item.user_value}/5\n执行可行 ${6 - item.execution_cost}/5 · 风险可控 ${6 - item.risk_level}/5` }
+            }))
+          }]
+        }, chartOptionsData.length > 1);
+        renderSeriesKey("option-radar-chart", chartOptionsData, (item) => item.name);
+
+        const experiments = data.validation_plan || [];
+        const experimentChartData = experiments
+          .filter((item) => typeof item.threshold === "number" && Number.isFinite(item.threshold) && ["rate", "score_5"].includes(item.threshold_unit))
+          .map((item) => ({
+            value: item.threshold_unit === "score_5" ? item.threshold / 5 : item.threshold,
+            raw: item.threshold,
+            unit: item.threshold_unit,
+            metric: item.metric,
+            decisionRule: item.decision_rule
+          }));
+        mountChart("validation-chart", {
+          ...baseTooltip,
+          grid: { left: 120, right: 38, top: 20, bottom: 32, containLabel: true },
+          xAxis: { type: "value", min: 0, max: 1, axisLabel: { ...baseTextStyle, formatter: (value) => `${Math.round(value * 100)}%` }, splitLine: { lineStyle: { color: colors.line } } },
+          yAxis: { type: "category", data: experimentChartData.map((item) => item.metric), axisLabel: { ...baseTextStyle, width: 112, overflow: "break" }, axisLine: { lineStyle: { color: colors.line } } },
+          series: [{ type: "bar", data: experimentChartData, barMaxWidth: 28, itemStyle: { color: colors.accent, borderRadius: [0, 3, 3, 0] }, label: { show: true, position: "right", formatter: (params) => thresholdText(params.data.raw, params.data.unit), color: colors.ink, fontSize: 11 }, tooltip: { formatter: (params) => `${params.data.metric}\n门槛 ${thresholdText(params.data.raw, params.data.unit)}\n${params.data.decisionRule}` } }]
+        }, experimentChartData.length > 0);
+      }
+
+      function cell(row, value, className) {
+        const td = create("td", className || "");
+        if (value !== undefined && value !== "") appendText(td, value);
+        row.append(td);
+        return td;
+      }
+
+      function evidenceLinks(ids, emptyLabel) {
+        const container = create("span");
+        if (!Array.isArray(ids) || !ids.length) {
+          container.textContent = emptyLabel || "证据不足";
+          return container;
+        }
+        ids.forEach((id, index) => {
+          if (index) container.append(document.createTextNode(", "));
+          const link = create("a", "evidence-link", id);
+          link.href = `#evidence-${id}`;
+          container.append(link);
+        });
+        return container;
+      }
+
+      function evidenceCell(row, ids, emptyLabel) {
+        const td = cell(row, "");
+        td.append(evidenceLinks(ids, emptyLabel));
+        return td;
+      }
+
+      function renderNeedsTable() {
+        const body = document.querySelector("#needs-table tbody");
+        data.user_needs.forEach((item) => {
+          const row = create("tr");
+          cell(row, item.segment);
+          cell(row, item.scene);
+          cell(row, item.task);
+          cell(row, text(item.importance), "numeric");
+          cell(row, text(item.urgency), "numeric");
+          cell(row, text(item.dissatisfaction), "numeric");
+          cell(row, item.willingness_signal);
+          body.append(row);
+        });
+      }
+
+      function renderOpportunities() {
+        const body = document.querySelector("#opportunity-table tbody");
+        const needMap = new Map(data.user_needs.map((item) => [item.need_id, item.segment]));
+        if (!data.opportunities.length) {
+          const row = create("tr");
+          const empty = cell(row, "证据不足，当前不能确认可验证的市场机会");
+          empty.colSpan = 6;
+          body.append(row);
+          return;
+        }
+        data.opportunities.forEach((item) => {
+          const row = create("tr");
+          cell(row, item.category_option);
+          cell(row, item.user_need_ids.map((id) => needMap.get(id) || id).join("、"));
+          cell(row, item.supply_gap);
+          cell(row, item.risk);
+          cell(row, statusLabel(item.confidence));
+          evidenceCell(row, item.evidence_ids);
+          body.append(row);
+        });
+      }
+
+      function renderCompetitorTable() {
+        const body = document.querySelector("#competitor-table tbody");
+        data.competitors.forEach((item) => {
+          const row = create("tr");
+          row.dataset.filterValues = item.competitor_type;
+          cell(row, item.name);
+          cell(row, competitorTypeLabel(item.competitor_type));
+          cell(row, item.positioning_statement);
+          cell(row, item.mindshare_keywords?.[0] || item.category);
+          const priceLabel = text(item.price_label);
+          const priceStatus = item.price_verified ? "（已核验）" : priceLabel.includes("不适用") ? "" : data.subject.type === "personal_ip" ? "（未纳入定位比较）" : "（未核验）";
+          cell(row, `${priceLabel}${priceStatus}`);
+          cell(row, listText(item.strengths));
+          cell(row, listText(item.weaknesses));
+          evidenceCell(row, item.evidence_ids, "未验证");
+          body.append(row);
+        });
+      }
+
+      function renderMentalPositions() {
+        const body = document.querySelector("#mental-position-table tbody");
+        data.mental_positions.forEach((item) => {
+          const row = create("tr");
+          cell(row, item.keyword);
+          cell(row, item.category);
+          cell(row, item.occupant);
+          cell(row, score(item.ladder_level), "numeric");
+          cell(row, statusLabel(item.status));
+          cell(row, statusLabel(item.confidence));
+          evidenceCell(row, item.evidence_ids, "未验证");
+          body.append(row);
+        });
+      }
+
+      function renderAdvantages() {
+        const body = document.querySelector("#advantage-table tbody");
+        data.advantages.forEach((item) => {
+          const row = create("tr");
+          cell(row, item.label);
+          cell(row, item.description);
+          evidenceCell(row, item.evidence_ids);
+          cell(row, listText(item.disqualifiers, "暂无否决项"));
+          const status = cell(row, "");
+          const badge = create("span", `tag ${item.status === "eligible" ? "positive" : item.status === "reject" ? "risk" : "caution"}`, statusLabel(item.status));
+          status.append(badge);
+          body.append(row);
+        });
+      }
+
+      function renderFourLayer() {
+        const layer = data.four_layer_positioning;
+        if (!layer) return;
+        const container = document.getElementById("four-layer-positioning");
+        container.hidden = false;
+        const status = document.getElementById("four-layer-status");
+        const statusMap = { aligned: "execute", partial: "validate_first", conflicted: "insufficient_evidence", insufficient: "insufficient_evidence" };
+        status.dataset.status = statusMap[layer.alignment_status] || "insufficient_evidence";
+        status.textContent = statusLabel(layer.alignment_status);
+        const grid = document.getElementById("four-layer-grid");
+        [["使命", layer.mission], ["人设", layer.persona], ["商业", layer.business], ["内容", layer.content]].forEach(([label, value]) => {
+          const item = create("div", "layer-item");
+          item.append(create("dt", "", label), create("dd", "", value));
+          grid.append(item);
+        });
+        appendText(document.getElementById("four-layer-strengths"), listText(layer.strengths));
+        appendText(document.getElementById("four-layer-conflicts"), listText(layer.conflicts));
+      }
+
+      function renderCourseExtension() {
+        const extension = data.course_marketing_extension;
+        if (!extension) return;
+        const container = document.getElementById("course-marketing-extension");
+        container.hidden = false;
+        const grid = document.getElementById("course-extension-grid");
+        [
+          ["专业人设", extension.professional_persona],
+          ["性格人设", extension.character_persona],
+          ["用户匹配", extension.audience_persona_fit],
+          ["靶心人", extension.target_person],
+          ["课程结果", extension.course_result],
+          ["方法机制", extension.method_mechanism],
+          ["交付结构", extension.delivery_structure],
+          ["内容差异", extension.content_difference]
+        ].forEach(([label, value]) => {
+          const item = create("div", "layer-item");
+          item.append(create("dt", "", label), create("dd", "", value));
+          grid.append(item);
+        });
+
+        const pathBody = document.querySelector("#course-action-path-table tbody");
+        extension.action_path.forEach((item) => {
+          const row = create("tr");
+          cell(row, item.stage);
+          cell(row, item.task);
+          cell(row, item.pain_point);
+          cell(row, item.current_solution);
+          evidenceCell(row, item.evidence_ids);
+          pathBody.append(row);
+        });
+
+        const mixLabels = { product: "产品", price: "价格", channel: "渠道", promotion: "传播" };
+        const mixBody = document.querySelector("#course-4p-table tbody");
+        Object.entries(mixLabels).forEach(([key, label]) => {
+          const item = extension.marketing_mix_4p[key];
+          const row = create("tr");
+          cell(row, label);
+          cell(row, item.baseline);
+          cell(row, item.differentiation_choice);
+          evidenceCell(row, item.evidence_ids);
+          mixBody.append(row);
+        });
+      }
+
+      function optionDefinition(label, value) {
+        const row = create("div", "definition-row");
+        row.append(create("dt", "", label), create("dd", "", value));
+        return row;
+      }
+
+      function renderOptions() {
+        const container = document.getElementById("option-list");
+        data.positioning_options.forEach((item) => {
+          const row = create("article", "option-row");
+          const name = create("div", "option-name", item.name);
+          name.append(create("span", `tag ${item.status === "recommended" ? "positive" : item.risk_level >= 4 ? "risk" : "caution"}`, statusLabel(item.status)));
+          const details = create("dl", "option-detail");
+          details.append(
+            optionDefinition("目标用户", item.target_user),
+            optionDefinition("关键场景", item.key_scene),
+            optionDefinition("建议品类", item.category),
+            optionDefinition("差异化", item.differentiation),
+            optionDefinition("核心价值", item.core_value),
+            optionDefinition("推荐理由", item.rationale)
+          );
+          const scores = create("div", "option-scores");
+          [["用户价值", item.user_value], ["竞争独特", item.competitive_uniqueness], ["执行成本", item.execution_cost], ["风险", item.risk_level]].forEach(([label, value]) => {
+            const scoreCell = create("div", "score-cell", label);
+            scoreCell.prepend(create("strong", "", score(value)));
+            scores.append(scoreCell);
+          });
+          row.append(name, details, scores);
+          container.append(row);
+        });
+      }
+
+      const areaLabels = { expression: "表达", product: "产品", content: "内容", price: "价格", channel: "渠道", sales: "销售" };
+      function renderStrategicActions() {
+        const body = document.querySelector("#actions-table tbody");
+        data.strategic_actions.forEach((item) => {
+          const row = create("tr");
+          cell(row, areaLabels[item.area] || item.area);
+          cell(row, item.action);
+          cell(row, item.rationale);
+          cell(row, statusLabel(item.priority));
+          cell(row, item.owner);
+          cell(row, item.horizon);
+          cell(row, item.success_signal);
+          evidenceCell(row, item.evidence_ids);
+          body.append(row);
+        });
+      }
+
+      function renderValidation() {
+        const body = document.querySelector("#validation-table tbody");
+        data.validation_plan.forEach((item) => {
+          const row = create("tr");
+          cell(row, item.hypothesis);
+          cell(row, item.audience);
+          cell(row, item.method);
+          cell(row, item.metric);
+          cell(row, thresholdText(item.threshold, item.threshold_unit), "numeric");
+          cell(row, item.sample, "numeric");
+          cell(row, `${text(item.duration_days)} 天`, "numeric");
+          cell(row, item.decision_rule);
+          body.append(row);
+        });
+      }
+
+      function renderEvidence() {
+        const sourceMap = new Map(data.sources.map((item) => [item.source_id, item]));
+        const claimMap = new Map(data.claims.map((item) => [item.claim_id, item]));
+        const evidenceContainer = document.getElementById("evidence-list");
+        data.evidence.forEach((item) => {
+          const source = sourceMap.get(item.source_id) || {};
+          const li = create("li", "evidence-item");
+          li.id = `evidence-${item.evidence_id}`;
+          li.dataset.filterValues = item.claim_ids.map((id) => claimMap.get(id)?.claim_type).filter(Boolean).join(" ");
+          const sourceLink = create("a", "evidence-link", item.source_id);
+          sourceLink.href = `#source-${item.source_id}`;
+          li.append(
+            create("span", "evidence-id", item.evidence_id),
+            create("span", "", item.claim_ids.join(", ")),
+            sourceLink,
+            create("span", "evidence-summary", item.summary),
+            create("span", "evidence-meta", `${text(source.grade)} 级 · ${marketFitLabel(item.market_fit)} · ${item.independent ? "独立" : "同源"}${item.conflict ? " · 有冲突" : ""}`)
+          );
+          evidenceContainer.append(li);
+        });
+
+        const sourceContainer = document.getElementById("source-list");
+        data.sources.forEach((item) => {
+          const li = create("li", "source-item");
+          li.id = `source-${item.source_id}`;
+          const grade = create("span", "source-grade", item.grade);
+          const body = create("div");
+          const url = safeHttpUrl(item.url_or_file);
+          const title = create(url ? "a" : "span", "source-title", item.title);
+          if (url) {
+            title.href = url;
+            title.target = "_blank";
+            title.rel = "noopener noreferrer";
+          }
+          body.append(title, create("span", "source-meta", `${item.source_id} · ${text(item.publisher)} · ${perspectiveLabel(item.perspective)} · ${text(item.accessed_at)} · ${statusLabel(item.freshness_status)} · ${text(item.intended_use)} · ${text(item.url_or_file)}`));
+          li.append(grade, body);
+          sourceContainer.append(li);
+        });
+      }
+
+      function setupSegmentedFilter(controlId, rowSelector) {
+        const control = document.getElementById(controlId);
+        if (!control) return;
+        const buttons = [...control.querySelectorAll("button[data-filter]")];
+        const rows = [...document.querySelectorAll(rowSelector)];
+        buttons.forEach((button) => button.addEventListener("click", () => {
+          const filter = button.dataset.filter;
+          buttons.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+          rows.forEach((row) => {
+            const values = (row.dataset.filterValues || "").split(/\s+/).filter(Boolean);
+            row.hidden = filter !== "all" && !values.includes(filter);
+          });
+        }));
+      }
+
+      function setupNavigation() {
+        const nav = document.getElementById("report-nav");
+        const links = [...document.querySelectorAll("#report-nav a")];
+        const sections = links.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+        const activate = (active) => {
+          if (!active) return;
+          links.forEach((link) => link.setAttribute("aria-current", String(link === active)));
+          if (nav.scrollWidth > nav.clientWidth) {
+            nav.scrollTo({ left: active.offsetLeft - (nav.clientWidth - active.clientWidth) / 2, behavior: "smooth" });
+          }
+        };
+        const observer = new IntersectionObserver((entries) => {
+          const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (!visible) return;
+          activate(links.find((link) => link.getAttribute("href") === `#${visible.target.id}`));
+        }, { rootMargin: "-20% 0px -68% 0px", threshold: [0, 0.1, 0.4] });
+        sections.forEach((section) => observer.observe(section));
+        activate(links[0]);
+        window.addEventListener("scroll", () => {
+          if (window.scrollY < 160) activate(links[0]);
+        }, { passive: true });
+      }
+
+      function setupTopbar() {
+        const topbar = document.getElementById("report-topbar");
+        const update = () => { topbar.dataset.compact = String(window.scrollY > 48); };
+        update();
+        window.addEventListener("scroll", update, { passive: true });
+      }
+
+      function setupTableScrollCues() {
+        document.querySelectorAll(".table-scroll").forEach((scroller) => {
+          const update = () => {
+            const overflow = scroller.scrollWidth > scroller.clientWidth + 1;
+            scroller.dataset.overflow = String(overflow);
+            scroller.dataset.atEnd = String(!overflow || scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 2);
+          };
+          update();
+          scroller.addEventListener("scroll", update, { passive: true });
+          window.addEventListener("resize", update, { passive: true });
+        });
+      }
+
+      renderHeader();
+      renderMetrics();
+      renderCredibilityMetrics();
+      renderConclusion();
+      renderNeedsTable();
+      renderOpportunities();
+      renderCompetitorTable();
+      renderMentalPositions();
+      renderAdvantages();
+      renderFourLayer();
+      renderCourseExtension();
+      renderOptions();
+      renderStrategicActions();
+      renderValidation();
+      renderEvidence();
+      chartOptions();
+      setupSegmentedFilter("competitor-filter", "#competitor-table tbody tr");
+      setupSegmentedFilter("claim-filter", "#evidence-list .evidence-item");
+      setupNavigation();
+      setupTopbar();
+      setupTableScrollCues();
+      appendText(document.getElementById("footer-note"), `本报告由结构化数据生成。观测指标来自来源与样本，1 至 5 级分值属于规则化诊断，不应解释为统计概率。${text(data.research_scope.notes)}`);
+      document.getElementById("print-report").addEventListener("click", () => window.print());
+      window.addEventListener("resize", () => charts.forEach((chart) => chart.resize()), { passive: true });
+      window.addEventListener("beforeprint", () => charts.forEach((chart) => chart.resize()));
+      const printMedia = window.matchMedia("print");
+      printMedia.addEventListener("change", () => charts.forEach((chart) => chart.resize()));
+    })();
+  </script>
+</body>
+</html>

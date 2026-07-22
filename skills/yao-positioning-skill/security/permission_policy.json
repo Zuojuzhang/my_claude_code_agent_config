@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "reviewed_at": "2026-07-10",
+  "capabilities": {
+    "file_write": {
+      "decision": "approved",
+      "reviewer": "Yao Team",
+      "scope": "scripts/render-report.py may create the three declared report artifacts under the user-selected local output directory; scripts/sanitize-package.py may rewrite only the explicitly selected distribution ZIP.",
+      "reason": "The skill must write the validated offline report bundle and remove private authoring evidence from its selected distribution archive; neither script modifies source systems or makes network requests.",
+      "expires_at": "2026-10-31",
+      "evidence": [
+        "scripts/render-report.py",
+        "scripts/sanitize-package.py",
+        "references/report-contract.md",
+        "security/permission_policy.md"
+      ],
+      "target_enforcement": {
+        "openai": "Metadata permission contract; execution still follows the active workspace file policy.",
+        "claude": "Adapter permission metadata plus the explicit local output-directory scope.",
+        "generic": "Adapter permission metadata plus the explicit local output-directory scope.",
+        "vscode": "Workspace trust plus adapter permission metadata and the explicit local output-directory scope."
+      }
+    }
+  }
+}

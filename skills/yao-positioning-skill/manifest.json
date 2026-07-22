@@ -1,0 +1,35 @@
+{
+  "name": "yao-positioning-skill",
+  "version": "1.3.0",
+  "owner": "Yao Team",
+  "updated_at": "2026-07-16",
+  "status": "active",
+  "maturity_tier": "production",
+  "lifecycle_stage": "production",
+  "context_budget_tier": "production",
+  "review_cadence": "monthly",
+  "skill_archetype": "production",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible",
+    "vscode"
+  ],
+  "factory_components": [
+    "references",
+    "scripts",
+    "templates",
+    "assets",
+    "security",
+    "reports"
+  ],
+  "file_backed_fixture": false,
+  "input_files": [],
+  "output_contract": [
+    "positioning-report.html",
+    "positioning-report-data.json",
+    "positioning-report.md"
+  ],
+  "rollback_boundary": "Delete the skill directory to remove the capability. Generated report bundles remain independent files and do not modify source systems."
+}

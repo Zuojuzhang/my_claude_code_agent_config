@@ -1,0 +1,470 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yao.local/schemas/positioning-report-data.schema.json",
+  "title": "Positioning report data",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meta",
+    "subject",
+    "research_scope",
+    "positioning_snapshot",
+    "executive_summary",
+    "sources",
+    "claims",
+    "evidence",
+    "user_needs",
+    "competitors",
+    "mental_positions",
+    "advantages",
+    "opportunities",
+    "positioning_options",
+    "strategic_actions",
+    "validation_plan"
+  ],
+  "$defs": {
+    "text": {"type": "string", "minLength": 1},
+    "id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"},
+    "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "score": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+    "ratio": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "stringArray": {"type": "array", "items": {"$ref": "#/$defs/text"}, "uniqueItems": true},
+    "idArray": {"type": "array", "items": {"$ref": "#/$defs/id"}, "uniqueItems": true},
+    "confidence": {"enum": ["high", "medium", "low", "insufficient"]},
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report_title", "generated_at", "locale", "research_mode", "status", "version"],
+      "properties": {
+        "report_title": {"$ref": "#/$defs/text"},
+        "generated_at": {"$ref": "#/$defs/date"},
+        "locale": {"$ref": "#/$defs/text"},
+        "research_mode": {"enum": ["local", "standard", "deep"]},
+        "status": {"$ref": "#/$defs/text"},
+        "version": {"$ref": "#/$defs/text"}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "identity", "stage", "objective", "target_users", "constraints", "assets"],
+      "properties": {
+        "name": {"$ref": "#/$defs/text"},
+        "type": {"enum": ["personal_ip", "course", "product", "service", "brand", "company"]},
+        "identity": {"$ref": "#/$defs/text"},
+        "stage": {"$ref": "#/$defs/text"},
+        "objective": {"$ref": "#/$defs/text"},
+        "target_users": {"$ref": "#/$defs/stringArray", "minItems": 1},
+        "constraints": {"$ref": "#/$defs/stringArray"},
+        "assets": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "fourLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mission", "persona", "business", "content", "alignment_status", "strengths", "conflicts", "evidence_ids"],
+      "properties": {
+        "mission": {"$ref": "#/$defs/text"},
+        "persona": {"$ref": "#/$defs/text"},
+        "business": {"$ref": "#/$defs/text"},
+        "content": {"$ref": "#/$defs/text"},
+        "alignment_status": {"enum": ["aligned", "partial", "conflicted", "insufficient"]},
+        "strengths": {"$ref": "#/$defs/stringArray"},
+        "conflicts": {"$ref": "#/$defs/stringArray"},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "courseActionStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "task", "pain_point", "current_solution", "evidence_ids"],
+      "properties": {
+        "stage": {"$ref": "#/$defs/text"},
+        "task": {"$ref": "#/$defs/text"},
+        "pain_point": {"$ref": "#/$defs/text"},
+        "current_solution": {"$ref": "#/$defs/text"},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "marketingMixChoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "differentiation_choice", "evidence_ids"],
+      "properties": {
+        "baseline": {"$ref": "#/$defs/text"},
+        "differentiation_choice": {"$ref": "#/$defs/text"},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "marketingMix4P": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product", "price", "channel", "promotion"],
+      "properties": {
+        "product": {"$ref": "#/$defs/marketingMixChoice"},
+        "price": {"$ref": "#/$defs/marketingMixChoice"},
+        "channel": {"$ref": "#/$defs/marketingMixChoice"},
+        "promotion": {"$ref": "#/$defs/marketingMixChoice"}
+      }
+    },
+    "courseMarketingExtension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["professional_persona", "character_persona", "audience_persona_fit", "target_person", "action_path", "marketing_mix_4p", "course_result", "method_mechanism", "delivery_structure", "content_difference", "evidence_ids"],
+      "properties": {
+        "professional_persona": {"$ref": "#/$defs/text"},
+        "character_persona": {"$ref": "#/$defs/text"},
+        "audience_persona_fit": {"$ref": "#/$defs/text"},
+        "target_person": {"$ref": "#/$defs/text"},
+        "action_path": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/courseActionStep"}},
+        "marketing_mix_4p": {"$ref": "#/$defs/marketingMix4P"},
+        "course_result": {"$ref": "#/$defs/text"},
+        "method_mechanism": {"$ref": "#/$defs/text"},
+        "delivery_structure": {"$ref": "#/$defs/text"},
+        "content_difference": {"$ref": "#/$defs/text"},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "researchScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["region", "time_window", "planned_competitor_count", "notes"],
+      "properties": {
+        "region": {"$ref": "#/$defs/text"},
+        "time_window": {"$ref": "#/$defs/text"},
+        "planned_competitor_count": {"type": "integer", "minimum": 1},
+        "notes": {"$ref": "#/$defs/text"}
+      }
+    },
+    "positioningSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_category",
+        "current_one_liner",
+        "current_mental_label",
+        "current_problem",
+        "primary_competitor_id",
+        "desired_category",
+        "desired_mental_label",
+        "desired_one_liner",
+        "contrast_sentence",
+        "reason_to_believe",
+        "sacrifice",
+        "evidence_ids"
+      ],
+      "properties": {
+        "current_category": {"$ref": "#/$defs/text"},
+        "current_one_liner": {"$ref": "#/$defs/text"},
+        "current_mental_label": {"$ref": "#/$defs/text"},
+        "current_problem": {"$ref": "#/$defs/text"},
+        "primary_competitor_id": {"$ref": "#/$defs/id"},
+        "desired_category": {"$ref": "#/$defs/text"},
+        "desired_mental_label": {"$ref": "#/$defs/text"},
+        "desired_one_liner": {"$ref": "#/$defs/text"},
+        "contrast_sentence": {"$ref": "#/$defs/text"},
+        "reason_to_believe": {"$ref": "#/$defs/stringArray", "minItems": 1, "maxItems": 3},
+        "sacrifice": {"$ref": "#/$defs/stringArray", "minItems": 1, "maxItems": 3},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "executiveSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommended_positioning", "category", "differentiation_label", "core_value", "unique_mechanism", "mindshare_keyword", "recommendation_status", "rationale", "counterevidence_condition", "next_action", "evidence_ids"],
+      "properties": {
+        "recommended_positioning": {"$ref": "#/$defs/text"},
+        "category": {"$ref": "#/$defs/text"},
+        "differentiation_label": {"$ref": "#/$defs/text"},
+        "core_value": {"$ref": "#/$defs/text"},
+        "unique_mechanism": {"$ref": "#/$defs/text"},
+        "mindshare_keyword": {"$ref": "#/$defs/text"},
+        "recommendation_status": {"enum": ["execute", "validate_first", "insufficient_evidence"]},
+        "rationale": {"$ref": "#/$defs/text"},
+        "counterevidence_condition": {"$ref": "#/$defs/text"},
+        "next_action": {"$ref": "#/$defs/text"},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "title", "publisher", "url_or_file", "source_type", "perspective", "grade", "published_at", "accessed_at", "directness", "freshness_status", "origin_group", "intended_use", "notes"],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/id"},
+        "title": {"$ref": "#/$defs/text"},
+        "publisher": {"$ref": "#/$defs/text"},
+        "url_or_file": {"$ref": "#/$defs/text"},
+        "source_type": {"$ref": "#/$defs/text"},
+        "perspective": {"enum": ["official", "user", "independent", "internal", "mixed"]},
+        "grade": {"enum": ["A", "B", "C", "D", "E"]},
+        "published_at": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+        "accessed_at": {"$ref": "#/$defs/date"},
+        "directness": {"$ref": "#/$defs/text"},
+        "freshness_status": {"enum": ["current", "stale", "not_applicable", "unknown"]},
+        "origin_group": {"$ref": "#/$defs/text"},
+        "intended_use": {"$ref": "#/$defs/text"},
+        "notes": {"$ref": "#/$defs/text"}
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "claim_type", "claim_text", "evidence_ids", "reasoning", "confidence", "counterevidence", "falsification_condition", "report_sections"],
+      "properties": {
+        "claim_id": {"$ref": "#/$defs/id"},
+        "claim_type": {"enum": ["fact", "self_report", "inference", "hypothesis", "recommendation"]},
+        "claim_text": {"$ref": "#/$defs/text"},
+        "evidence_ids": {"$ref": "#/$defs/idArray"},
+        "reasoning": {"$ref": "#/$defs/text"},
+        "confidence": {"$ref": "#/$defs/confidence"},
+        "counterevidence": {"$ref": "#/$defs/stringArray"},
+        "falsification_condition": {"$ref": "#/$defs/text"},
+        "report_sections": {"$ref": "#/$defs/stringArray", "minItems": 1}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "claim_ids", "source_id", "summary", "relevance", "directness", "freshness", "independent", "conflict", "market_fit", "market_fit_notes", "notes"],
+      "properties": {
+        "evidence_id": {"$ref": "#/$defs/id"},
+        "claim_ids": {"$ref": "#/$defs/idArray", "minItems": 1},
+        "source_id": {"$ref": "#/$defs/id"},
+        "summary": {"$ref": "#/$defs/text"},
+        "relevance": {"$ref": "#/$defs/score"},
+        "directness": {"$ref": "#/$defs/score"},
+        "freshness": {"$ref": "#/$defs/score"},
+        "independent": {"type": "boolean"},
+        "conflict": {"type": "boolean"},
+        "market_fit": {"enum": ["aligned", "partial", "mismatch", "unknown"]},
+        "market_fit_notes": {"$ref": "#/$defs/text"},
+        "notes": {"$ref": "#/$defs/text"}
+      }
+    },
+    "userNeed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["need_id", "segment", "task", "scene", "importance", "urgency", "dissatisfaction", "willingness_signal", "evidence_ids"],
+      "properties": {
+        "need_id": {"$ref": "#/$defs/id"},
+        "segment": {"$ref": "#/$defs/text"},
+        "task": {"$ref": "#/$defs/text"},
+        "scene": {"$ref": "#/$defs/text"},
+        "importance": {"$ref": "#/$defs/score"},
+        "urgency": {"$ref": "#/$defs/score"},
+        "dissatisfaction": {"$ref": "#/$defs/score"},
+        "willingness_signal": {"$ref": "#/$defs/text"},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "competitor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["competitor_id", "name", "competitor_type", "category", "target_users", "positioning_statement", "differentiation_claims", "price_label", "price_verified", "strengths", "weaknesses", "evidence_ids", "mindshare_keywords", "category_clarity", "differentiation_strength", "proof_strength", "user_relevance"],
+      "properties": {
+        "competitor_id": {"$ref": "#/$defs/id"},
+        "name": {"$ref": "#/$defs/text"},
+        "competitor_type": {"enum": ["direct", "indirect", "status_quo", "inaction", "benchmark"]},
+        "category": {"$ref": "#/$defs/text"},
+        "target_users": {"$ref": "#/$defs/stringArray", "minItems": 1},
+        "positioning_statement": {"$ref": "#/$defs/text"},
+        "differentiation_claims": {"$ref": "#/$defs/stringArray", "minItems": 1},
+        "price_label": {"type": ["string", "null"]},
+        "price_verified": {"type": "boolean"},
+        "strengths": {"$ref": "#/$defs/stringArray", "minItems": 1},
+        "weaknesses": {"$ref": "#/$defs/stringArray", "minItems": 1},
+        "evidence_ids": {"$ref": "#/$defs/idArray"},
+        "mindshare_keywords": {"$ref": "#/$defs/stringArray", "minItems": 1},
+        "category_clarity": {"$ref": "#/$defs/score"},
+        "differentiation_strength": {"$ref": "#/$defs/score"},
+        "proof_strength": {"$ref": "#/$defs/score"},
+        "user_relevance": {"$ref": "#/$defs/score"}
+      }
+    },
+    "mentalPosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mental_position_id", "keyword", "category", "occupant", "ladder_level", "status", "confidence", "evidence_ids"],
+      "properties": {
+        "mental_position_id": {"$ref": "#/$defs/id"},
+        "keyword": {"$ref": "#/$defs/text"},
+        "category": {"$ref": "#/$defs/text"},
+        "occupant": {"$ref": "#/$defs/text"},
+        "ladder_level": {"$ref": "#/$defs/score"},
+        "status": {"enum": ["occupied", "contested", "candidate", "unverified"]},
+        "confidence": {"$ref": "#/$defs/confidence"},
+        "evidence_ids": {"$ref": "#/$defs/idArray"}
+      }
+    },
+    "advantage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["advantage_id", "label", "description", "relevance", "rarity", "evidence_strength", "defensibility", "strategic_fit", "expression_focus", "competitor_median", "evidence_ids", "disqualifiers", "status"],
+      "properties": {
+        "advantage_id": {"$ref": "#/$defs/id"},
+        "label": {"$ref": "#/$defs/text"},
+        "description": {"$ref": "#/$defs/text"},
+        "relevance": {"$ref": "#/$defs/score"},
+        "rarity": {"$ref": "#/$defs/score"},
+        "evidence_strength": {"$ref": "#/$defs/score"},
+        "defensibility": {"$ref": "#/$defs/score"},
+        "strategic_fit": {"$ref": "#/$defs/score"},
+        "expression_focus": {"$ref": "#/$defs/score"},
+        "competitor_median": {"type": ["number", "null"], "minimum": 1, "maximum": 5},
+        "evidence_ids": {"$ref": "#/$defs/idArray"},
+        "disqualifiers": {"$ref": "#/$defs/stringArray"},
+        "status": {"enum": ["eligible", "validate", "reject"]}
+      }
+    },
+    "opportunity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opportunity_id", "user_need_ids", "supply_gap", "category_option", "risk", "confidence", "evidence_ids"],
+      "properties": {
+        "opportunity_id": {"$ref": "#/$defs/id"},
+        "user_need_ids": {"$ref": "#/$defs/idArray", "minItems": 1},
+        "supply_gap": {"$ref": "#/$defs/text"},
+        "category_option": {"$ref": "#/$defs/text"},
+        "risk": {"$ref": "#/$defs/text"},
+        "confidence": {"$ref": "#/$defs/confidence"},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["option_id", "name", "target_user", "key_scene", "category", "differentiation_label", "differentiation", "core_value", "unique_mechanism", "proof", "mindshare_keyword", "reposition_from", "execution_cost", "risk_level", "user_value", "competitive_uniqueness", "category_clarity", "status", "rationale", "evidence_ids"],
+      "properties": {
+        "option_id": {"$ref": "#/$defs/id"},
+        "name": {"$ref": "#/$defs/text"},
+        "target_user": {"$ref": "#/$defs/text"},
+        "key_scene": {"$ref": "#/$defs/text"},
+        "category": {"$ref": "#/$defs/text"},
+        "differentiation_label": {"$ref": "#/$defs/text"},
+        "differentiation": {"$ref": "#/$defs/text"},
+        "core_value": {"$ref": "#/$defs/text"},
+        "unique_mechanism": {"$ref": "#/$defs/text"},
+        "proof": {"$ref": "#/$defs/text"},
+        "mindshare_keyword": {"$ref": "#/$defs/text"},
+        "reposition_from": {"$ref": "#/$defs/text"},
+        "execution_cost": {"$ref": "#/$defs/score"},
+        "risk_level": {"$ref": "#/$defs/score"},
+        "user_value": {"$ref": "#/$defs/score"},
+        "competitive_uniqueness": {"$ref": "#/$defs/score"},
+        "category_clarity": {"$ref": "#/$defs/score"},
+        "status": {"enum": ["recommended", "alternative", "reserve", "rejected"]},
+        "rationale": {"$ref": "#/$defs/text"},
+        "evidence_ids": {"$ref": "#/$defs/idArray"}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_id", "area", "action", "rationale", "priority", "owner", "horizon", "success_signal", "evidence_ids"],
+      "properties": {
+        "action_id": {"$ref": "#/$defs/id"},
+        "area": {"enum": ["expression", "product", "content", "price", "channel", "sales"]},
+        "action": {"$ref": "#/$defs/text"},
+        "rationale": {"$ref": "#/$defs/text"},
+        "priority": {"enum": ["high", "medium", "low"]},
+        "owner": {"$ref": "#/$defs/text"},
+        "horizon": {"$ref": "#/$defs/text"},
+        "success_signal": {"$ref": "#/$defs/text"},
+        "evidence_ids": {"$ref": "#/$defs/idArray", "minItems": 1}
+      }
+    },
+    "experiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["experiment_id", "hypothesis", "audience", "method", "baseline", "metric", "threshold", "threshold_unit", "sample", "duration_days", "decision_rule"],
+      "properties": {
+        "experiment_id": {"$ref": "#/$defs/id"},
+        "hypothesis": {"$ref": "#/$defs/text"},
+        "audience": {"$ref": "#/$defs/text"},
+        "method": {"$ref": "#/$defs/text"},
+        "baseline": {"$ref": "#/$defs/text"},
+        "metric": {"$ref": "#/$defs/text"},
+        "threshold": {"type": "number", "minimum": 0, "maximum": 5},
+        "threshold_unit": {"enum": ["rate", "score_5"]},
+        "sample": {"type": "integer", "minimum": 1},
+        "duration_days": {"type": "integer", "minimum": 1},
+        "decision_rule": {"$ref": "#/$defs/text"}
+      }
+    },
+    "computedMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_coverage_rate", "independent_corroboration_rate", "ab_source_share", "freshness_compliance_rate", "unresolved_conflict_rate", "market_fit_coverage_rate", "competitor_set_coverage", "competitor_evidence_coverage", "competitor_user_evidence_coverage", "price_transparency_rate", "need_importance_median", "need_urgency_median", "need_dissatisfaction_median", "valid_difference_count", "recommended_category_clarity", "recommended_user_value", "recommended_competitive_uniqueness", "recommended_execution_cost", "key_risk_count", "source_grade_counts", "competitor_type_counts", "claim_confidence_counts"],
+      "properties": {
+        "evidence_coverage_rate": {"$ref": "#/$defs/ratio"},
+        "independent_corroboration_rate": {"$ref": "#/$defs/ratio"},
+        "ab_source_share": {"$ref": "#/$defs/ratio"},
+        "freshness_compliance_rate": {"$ref": "#/$defs/ratio"},
+        "unresolved_conflict_rate": {"$ref": "#/$defs/ratio"},
+        "market_fit_coverage_rate": {"$ref": "#/$defs/ratio"},
+        "competitor_set_coverage": {"$ref": "#/$defs/ratio"},
+        "competitor_evidence_coverage": {"$ref": "#/$defs/ratio"},
+        "competitor_user_evidence_coverage": {"$ref": "#/$defs/ratio"},
+        "price_transparency_rate": {"$ref": "#/$defs/ratio"},
+        "need_importance_median": {"$ref": "#/$defs/score"},
+        "need_urgency_median": {"$ref": "#/$defs/score"},
+        "need_dissatisfaction_median": {"$ref": "#/$defs/score"},
+        "valid_difference_count": {"type": "integer", "minimum": 0},
+        "recommended_category_clarity": {"$ref": "#/$defs/score"},
+        "recommended_user_value": {"$ref": "#/$defs/score"},
+        "recommended_competitive_uniqueness": {"$ref": "#/$defs/score"},
+        "recommended_execution_cost": {"$ref": "#/$defs/score"},
+        "key_risk_count": {"type": "integer", "minimum": 0},
+        "source_grade_counts": {"type": "object"},
+        "competitor_type_counts": {"type": "object"},
+        "claim_confidence_counts": {"type": "object"}
+      }
+    }
+  },
+  "properties": {
+    "meta": {"$ref": "#/$defs/meta"},
+    "subject": {"$ref": "#/$defs/subject"},
+    "four_layer_positioning": {"$ref": "#/$defs/fourLayer"},
+    "course_marketing_extension": {"$ref": "#/$defs/courseMarketingExtension"},
+    "research_scope": {"$ref": "#/$defs/researchScope"},
+    "positioning_snapshot": {"$ref": "#/$defs/positioningSnapshot"},
+    "executive_summary": {"$ref": "#/$defs/executiveSummary"},
+    "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
+    "claims": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/claim"}},
+    "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+    "user_needs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/userNeed"}},
+    "competitors": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/competitor"}},
+    "mental_positions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/mentalPosition"}},
+    "advantages": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/advantage"}},
+    "opportunities": {"type": "array", "items": {"$ref": "#/$defs/opportunity"}},
+    "positioning_options": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"$ref": "#/$defs/option"}},
+    "strategic_actions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/action"}},
+    "validation_plan": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/experiment"}},
+    "computed_metrics": {"$ref": "#/$defs/computedMetrics"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "subject": {
+            "properties": {"type": {"enum": ["personal_ip", "course"]}},
+            "required": ["type"]
+          }
+        }
+      },
+      "then": {"required": ["four_layer_positioning"]}
+    },
+    {
+      "if": {
+        "properties": {
+          "subject": {
+            "properties": {"type": {"const": "course"}},
+            "required": ["type"]
+          }
+        }
+      },
+      "then": {"required": ["course_marketing_extension"]}
+    }
+  ]
+}

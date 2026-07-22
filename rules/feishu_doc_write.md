@@ -79,6 +79,8 @@ GET /docx/v1/documents/{doc_token}/blocks/{block_id}
 - `block_type` 必须使用**数字枚举**，禁止传字符串
 - 单次请求 children 数量不超过40个，内容过多时分批追加
 - 写入前确认文档现有内容，避免重复追加（如需替换应先清空或追加在末尾）
+- **建表有尺寸上限（2026-07-20实测踩坑）**：POST children建12×7表报1770001 invalid param，8×7可以过（16×6等历史小表也都能过，上限疑似按行数或总格数卡）。建大表的稳妥做法：先建8行以内的表，再用PATCH块接口`{"insert_table_row":{"row_index":-1}}`逐行补到目标行数，行补齐后再统一填格
+- **表格/grid的默认空块是异步生成的（2026-07-19实测踩坑）**：新建table的每个单元格、grid的每个分栏，飞书都会自动补一个空text块，且创建接口返回时它可能尚未落位。「建完立刻读children再清空」会漏掉它，随后它排在你写入的内容前面，每格视觉上多一行空行。正确做法：所有单元格/分栏写完后，**整文档回读一遍**，对children≥2的cell（type 32）和grid_column（type 25）删除其中的空text块（batch_delete按索引从后往前删）；不要信任建表后立刻读到的children列表
 
 ---
 
@@ -88,6 +90,22 @@ GET /docx/v1/documents/{doc_token}/blocks/{block_id}
 |--------|------|----------|
 | `99992402` | field validation failed，block_type传了字符串 | 改为数字枚举 |
 | `1770032` | forBidden，应用无编辑权限 | 在飞书文档中添加应用为协作者，赋予可编辑权限 |
+| `99991672` | 应用缺少某项权限scope | 见下方「权限新增后的生效链路」 |
+
+### 画板（board）写入（2026-07-20实测跑通）
+
+- docx里建画板：POST children传`{"block_type":43,"board":{}}`，响应的`board.token`就是whiteboard_id
+- 画节点：POST `/board/v1/whiteboards/{id}/nodes`，body`{"nodes":[...]}`；必须先建形状（composite_shape）再建连线（connector，靠attached_object引用形状id）
+- 节点JSON只用安全字段（type/x/y/width/height/composite_shape/text/style/z_index），多余字段报2890002；参考github.com/riba2534/feishu-cli的board references
+- **创建响应里的节点id结构不可靠**：拿id稳妥做法是创建形状后GET回读全部节点，按text文本匹配出id再建连线
+- 所需scope：`board:whiteboard:node:create`（写）、读回也要对应read权限；新加scope走下面的生效链路
+
+### 权限新增后的生效链路（2026-07-20实测踩坑）
+
+给应用新增权限（如画板`board:whiteboard:node:create`）后，API不会立即放行，两道关都要过：
+
+1. **版本发布**：自建应用加权限后要在开发者后台创建新版本并发布，权限列表显示「已开通」不等于已生效。
+2. **token轮换**：`tenant_access_token`按2小时缓存复用，权限是发token那一刻定死的。旧token不带新权限，要等它剩余有效期降到30分钟内飞书才换发新token。排查方法：看token响应的`expire`字段，接近7200说明是新token；拿到全新token仍报99991672，才能断定权限真没挂上（此时查权限页「应用身份」列的状态，别只看用户身份）。
 
 ---
 

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yao.local/schemas/positioning-intake-brief.schema.json",
+  "title": "Positioning research intake brief",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "subject",
+    "objective",
+    "offer",
+    "market",
+    "target_user_hypothesis",
+    "inputs",
+    "known_competitors",
+    "constraints",
+    "unknowns"
+  ],
+  "$defs": {
+    "text": {"type": "string"},
+    "nonemptyText": {"type": "string", "minLength": 1},
+    "stringArray": {"type": "array", "items": {"$ref": "#/$defs/nonemptyText"}, "uniqueItems": true},
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type"],
+      "properties": {
+        "name": {"$ref": "#/$defs/text"},
+        "type": {"enum": ["personal_ip", "course", "product", "service", "brand", "company"]}
+      }
+    },
+    "market": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["region", "language", "industry"],
+      "properties": {
+        "region": {"$ref": "#/$defs/text"},
+        "language": {"$ref": "#/$defs/text"},
+        "industry": {"$ref": "#/$defs/text"}
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_id", "input_type", "role", "locator", "accessible", "summary"],
+      "properties": {
+        "input_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$"},
+        "input_type": {"enum": ["text", "file", "url"]},
+        "role": {"enum": ["subject", "offer", "user", "competitor", "proof", "market", "constraint"]},
+        "locator": {"$ref": "#/$defs/text"},
+        "accessible": {"type": "boolean"},
+        "summary": {"$ref": "#/$defs/text"}
+      }
+    }
+  },
+  "properties": {
+    "subject": {"$ref": "#/$defs/subject"},
+    "objective": {"$ref": "#/$defs/text"},
+    "offer": {"$ref": "#/$defs/text"},
+    "market": {"$ref": "#/$defs/market"},
+    "target_user_hypothesis": {"$ref": "#/$defs/stringArray"},
+    "inputs": {"type": "array", "items": {"$ref": "#/$defs/input"}},
+    "known_competitors": {"$ref": "#/$defs/stringArray"},
+    "constraints": {"$ref": "#/$defs/stringArray"},
+    "unknowns": {"$ref": "#/$defs/stringArray"}
+  }
+}

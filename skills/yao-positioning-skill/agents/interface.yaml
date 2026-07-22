@@ -1,0 +1,26 @@
+interface:
+  display_name: "定位分析与报告"
+  short_description: "通过问答、附件或网址形成可信的一句话定位"
+  default_prompt: "使用 $yao-positioning-skill 接受我的直接回答、附件、官网或具体网址。先用带示例的问题补齐最低必要信息并确认研究范围，达到就绪门槛后再分析用户、竞品与可证明优势，输出当前理解、目标词、一句话定位及可审计的 HTML、JSON 和 Markdown 报告。"
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+    - "vscode"
+  activation:
+    mode: "manual-or-description"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    openai: "metadata-adapter"
+    claude: "neutral-source-plus-adapter"
+    generic: "neutral-source"
+    vscode: "agent-skills-source-with-vscode-notes"

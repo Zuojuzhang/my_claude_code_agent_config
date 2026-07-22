@@ -24,7 +24,7 @@
 |--------|------|--------------|------|
 | 备课/课件生产 | 每周，耗时最大 | `~/.claude/skills/live-lesson-deck/SKILL.md` | lesson.html网页课件 |
 | 直播答疑归档 | 每周一次 | `~/.claude/skills/live-qa-archive/SKILL.md` | 飞书wiki笔记+讲课PPT |
-| B站视频文稿 | 不定期 | `~/.claude/skills/linyi-lyi-scriptwriter/SKILL.md`（林亦LYi风格，三模式：成稿/改稿/骨架） | 可朗读的视频文稿 |
+| B站视频文稿 | 不定期 | `~/.claude/skills/juzhang-lesson-script/SKILL.md`（视频稿模式，橘长本人声线，2026-07-21用户定向；linyi-lyi-scriptwriter保留为林亦风格备选） | 可朗读的视频文稿 |
 
 次要工作流：编码开发（调度看dispatch.md编码轨）、界面与营销页设计（dispatch.md设计轨：营销页taste-skill加cn_typography中文补丁，产品UI用frontend-design）、数据分析（`~/.claude/skills/business-analyst`）、知识库归档与巡库（见下节）。
 

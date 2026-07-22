@@ -2,7 +2,7 @@
 
 ## 何时读
 
-用taste-skill（design-taste-frontend）、impeccable、frontend-design等西式设计skill做**中文页面**时必读。这些skill的字体规则建立在拉丁字体上（Geist、Satoshi、Cabinet Grotesk等），全部不覆盖中文，直接套用会退化成系统默认宋体黑体。本文件把它们的字体原则（display要有性格、正文要中性耐读、一个项目一套搭配）翻译成中文可用的字体池。
+用taste-skill（design-taste-frontend）、impeccable、frontend-design、frontend-slides等西式设计skill做**中文页面**（含live-lesson-deck等课件deck）时必读。这些skill的字体规则建立在拉丁字体上（Geist、Satoshi、Cabinet Grotesk等），全部不覆盖中文，直接套用会退化成系统默认宋体黑体。本文件把它们的字体原则（display要有性格、正文要中性耐读、一个项目一套搭配）翻译成中文可用的字体池。
 
 ## Display字体池（标题、大字、品牌感，选一个有性格的）
 
